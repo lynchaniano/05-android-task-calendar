@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Author:		Alberto Gil Tesa
+	WebSite:	http://giltesa.com
+	License:	CC BY-NC-SA 3.0
+				http://goo.gl/CTYnN
+				
+	Project:	Task Calendar
+	Package:	com.giltesa.taskcalendar
+	File:		/TaskCalendar/res/menu/main_actionbar.xml
+-->
+<!--
+	NOTAS:
+	http://developer.android.com/guide/topics/ui/actionbar.html 
+	http://developer.android.com/design/downloads/index.html
+	
+	
+	MIRAR:
+	isTablet():	http://stackoverflow.com/questions/11358097/how-action-bar-detect-where-menu-button-must-show
+	PoPup http://www.vogella.com/code/ApiDemos/src/com/example/android/apis/view/PopupMenu1.html
+-->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/main_actionbar_search"
+        android:orderInCategory="1"
+        android.widget.SearchView=""
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@drawable/ic_actionbar_search"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/main_actionbar_search"/>
+    <item
+        android:id="@+id/main_actionbar_menu"
+        android:orderInCategory="2"
+        android:icon="@drawable/ic_actionbar_menu"
+        android:showAsAction="ifRoom"
+        android:title="@string/main_actionbar_menu"/> 
+
+</menu>

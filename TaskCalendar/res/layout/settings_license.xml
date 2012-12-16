@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Author:     Alberto Gil Tesa
+    WebSite:    http://giltesa.com
+    License:    CC BY-NC-SA 3.0
+                http://goo.gl/CTYnN
+
+    Project:    Task Calendar
+    Package:    com.giltesa.taskcalendar
+    File:       /TaskCalendar/res/layout/settings_licence.xml-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <WebView
+        android:id="@+id/settings_license_webview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+</LinearLayout>

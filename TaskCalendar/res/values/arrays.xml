@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Author:		Alberto Gil Tesa
+	WebSite:	http://giltesa.com
+	License:	CC BY-NC-SA 3.0
+				http://goo.gl/CTYnN
+				
+	Project:	Task Calendar
+	Package:	com.giltesa.taskcalendar
+	File:		/TaskCalendar/res/values/arrays.xml (English)
+-->
+
+<resources>
+
+    <!-- MAIN.MENU.SETTINGS.APP.SORTTASKBY -->
+    <string-array name="main_menu_settings_app_sortTasksBy_listOptions">
+    	<item>Oldest first</item>
+        <item>Newest first</item>
+        <item>With more tasks to finish first</item>
+        <item>With fewer tasks to finish first</item>
+    </string-array>
+
+    <!-- MAIN.MENU.SETTINGS.APP.THEME -->
+    <string-array name="main_menu_settings_app_theme_listOptions">
+        <item>Dark</item>
+        <item>Light</item>
+    </string-array>    
+
+
+    
+
+
+
+
+        
+</resources>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Author:		Alberto Gil Tesa
+	WebSite:	http://giltesa.com
+	License:	CC BY-NC-SA 3.0
+				http://goo.gl/CTYnN
+				
+	Project:	Task Calendar
+	Package:	com.giltesa.taskcalendar
+	File:		/TaskCalendar/res/menu/settings_tags_menu.xml
+-->
+
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/settings_tags_popupmenu_name"
+        android:title="@string/settings_tags_popupmenu_name"
+        android:orderInCategory="1"
+        android:showAsAction="never"        
+        /> 
+    
+    <item
+        android:id="@+id/settings_tags_popupmenu_color"
+        android:title="@string/settings_tags_popupmenu_color"
+        android:orderInCategory="2"
+        android:showAsAction="never" />
+    
+    <item
+        android:id="@+id/settings_tags_popupmenu_delete"
+        android:title="@string/settings_tags_popupmenu_delete"
+        android:orderInCategory="3"
+        android:showAsAction="never"/>        
+
+</menu>
