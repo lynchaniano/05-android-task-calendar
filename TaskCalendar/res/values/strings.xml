@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Author:		Alberto Gil Tesa
+	WebSite:	http://giltesa.com
+	License:	CC BY-NC-SA 3.0
+				http://goo.gl/CTYnN
+				
+	Project:	Task Calendar
+	Package:	com.giltesa.taskcalendar
+	File:		/TaskCalendar/res/values/strings.xml (English)
+-->
+
+<resources>
+
+    <!-- APP -->
+    <string name="app_name">TaskCalendar</string>
+    <string name="main_title">Task Calendar</string>
+    
+    <!-- MAIN -->
+    <string name="main_exit_title">Exit</string>
+    <string name="main_exit_summary">Are you sure you want to leave?</string>
+
+    <!-- MAIN.ACTIONBAR -->
+    <string name="main_actionbar_search">Search</string>
+    <string name="main_actionbar_menu">Menu</string>
+
+    <!-- MAIN.MENU -->
+    <string name="main_menu_newtask">New Task</string>
+    <string name="main_menu_settings">Settings</string>
+    <string name="main_menu_exit">Exit</string>
+
+    <!-- MAIN.MENU.SETTINGS.APP -->
+    <string name="main_menu_settings_app_category">Application Preferences</string>
+    <string name="main_menu_settings_app_sortTasksBy_title">Sort tasks by</string>
+    <string name="main_menu_settings_app_sortTasksBy_summary">Ordering the tasks in different ways</string>
+	<string name="main_menu_settings_app_theme_title">Choose Theme</string>
+	<string name="main_menu_settings_app_theme_summary">Select the visual theme for the application.</string>
+    <string name="main_menu_settings_app_confirmExit_title">Confirm on exit</string>
+    <string name="main_menu_settings_app_confirmExit_summary">Ask for confirmation before leaving</string>
+   
+    <!-- MAIN.MENU.SETTINGS.CALENDAR -->
+    <string name="main_menu_settings_calendar_category">Calendar Preferences</string>
+    <string name="main_menu_settings_calendar_manageTags_title">Manage Tags</string>
+    <string name="main_menu_settings_calendar_manageTags_summary">Add, delete or edit the Tags</string> 
+    <string name="main_menu_settings_calendar_directoryStorage_title">Directory Storage</string>
+    <string name="main_menu_settings_calendar_directoryStorage_summary">The directory to save the files and backups</string>
+    <string name="main_menu_settings_calendar_directoryStorage_defaultValue">/sdcard/taskCalendar</string>
+    <string name="main_menu_settings_calendar_manageBackup_title">Manage Backup</string>
+    <string name="main_menu_settings_calendar_manageBackup_summary">Safeguard the data on the SD memory</string>
+    <string name="main_menu_settings_calendar_cloud_title">Cloud Backup</string>
+    <string name="main_menu_settings_calendar_cloud_summary">Store your backups on Dropbox</string>    
+
+
+    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG -->
+    	<string name="settings_tags_task">task</string>
+    	<string name="settings_tags_itemList_empty">Add a tag using the top button</string>
+    
+    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.ACTIONBAR -->
+    	<string name="settings_tags_actionbar_add">Add Tag</string>
+    	
+    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU -->
+    	<string name="settings_tags_popupmenu_name">Edit name</string>
+    	<string name="settings_tags_popupmenu_color">Edit color</string>
+    	<string name="settings_tags_popupmenu_delete">Delete tag</string>
+    	
+    		<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.NAME -->
+    		<string name="settings_tags_popupmenu_name_title">Enter the name of the tag</string>
+    		<string name="settings_tags_popupmenu_name_message">The current name:</string>
+    		<string name="settings_tags_popupmenu_name_defaultName">New Tag</string>
+    	
+	    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.COLOR -->
+	    	<string name="settings_tags_popupmenu_color_title">Pick a color</string>
+	    	
+    		<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.DELETE -->
+    		<string name="settings_tags_popupmenu_delete_title">Remove the tag</string>
+    		<string name="settings_tags_popupmenu_delete_message">Really want to delete the tag</string>	    	
+	    	
+    	
+    	
+    	
+    	<!-- MAIN.MENU.SETTINGS.CALENDAR.BACKUP -->
+    
+    
+    	<!-- MAIN.MENU.SETTINGS.CALENDAR.CLOUD -->    	
+    	
+    
+    <!-- MAIN.MENU.SETTINGS.ABOUT -->
+    <string name="main_menu_settings_about_category">About</string>
+    <string name="main_menu_settings_about_about_title">About</string>
+    <string name="main_menu_settings_about_share_title">Share Application</string>
+    <string name="main_menu_settings_about_share_summary">Share the APP with friends</string>
+	<string name="main_menu_settings_about_share_text">I have been using TaskCalendar and thought you might like it too. Heres the download link: https://play.google.com/store/apps/details?id=com.giltesa.taskcalendar</string>    
+    <string name="main_menu_settings_about_rate_title">Rate Task Calendar</string>
+    <string name="main_menu_settings_about_rate_summary">Rate and write a review on the Google Play Store</string>    
+    <string name="main_menu_settings_about_errorReport_title">Error report</string>
+    <string name="main_menu_settings_about_errorReport_summary">Report an error or improvement</string>
+    <string name="main_menu_settings_about_errorReport_text">mailto:giltesa@giltesa.com?subject=Report+an+error+or+improvement</string>    
+    <string name="main_menu_settings_about_softwareLicense_title">Software License</string>
+
+	    <!-- MAIN.MENU.SETTINGS.ABOUT.ABOUT -->
+	    <string name="about_apptitle">Task Calendar for Android</string>
+	    <string name="about_version">Version</string>
+	    <string name="about_author">giltesa @ 2012</string>
+	    <string name="about_blog_url">http://giltesa.com</string>
+	    <string name="about_blog_url_title"><u>www.giltesa.com</u></string>
+    
+    
+    	<!-- MAIN.MENU.SETTINGS.ABOUT.LICENSE -->
+    	<string name="settings_license_actionbar_web">Visit license summary on the web site</string>
+		<string name="settings_license_actionbar_url_base">http://creativecommons.org/licenses/by-nc-sa/3.0/deed.</string>    
+
+		
+		
+
+    
+    
+    
+    
+    
+    
+
+    <!-- BORRAR: -->
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="title_section4">Section 4</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>

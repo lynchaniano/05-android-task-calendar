@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Author:     Alberto Gil Tesa
+    WebSite:    http://giltesa.com
+    License:    CC BY-NC-SA 3.0
+                http://goo.gl/CTYnN
+
+    Project:    Task Calendar
+    Package:    com.giltesa.taskcalendar
+    File:       /TaskCalendar/res/layout/settings_tags_listitem.xml
+
+-->
+
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<!-- View -->
+		<TextView android:id="@+id/tags_listitem_color"
+			android:layout_width="12dip"
+			android:layout_height="fill_parent"
+			android:layout_marginRight="7dip"
+			android:background="#D4D4D4" />	
+
+
+		<RelativeLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"	
+			android:paddingTop="8dip"
+			android:paddingBottom="8dip"
+			android:paddingRight="8dip" >
+
+
+			<TextView
+				android:id="@+id/tags_listitem_id"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:visibility="invisible" />
+			
+			<TextView
+				android:id="@+id/tags_listitem_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="16dip"
+				android:textStyle="bold"
+				android:fadingEdge="vertical" />
+
+			<TextView
+				android:id="@+id/tags_listitem_counter"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentLeft="true"
+				android:layout_below="@+id/tags_listitem_name"
+				android:layout_marginTop="2dip"
+				android:textSize="12dip" />
+			
+		</RelativeLayout>
+		
+	</LinearLayout>
+	
+</LinearLayout>

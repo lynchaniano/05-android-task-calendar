@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Author:		Alberto Gil Tesa
+	WebSite:	http://giltesa.com
+	License:	CC BY-NC-SA 3.0
+				http://goo.gl/CTYnN
+				
+	Project:	Task Calendar
+	Package:	com.giltesa.taskcalendar
+	File:		/TaskCalendar/res/menu/tags_actionbar.xml
+-->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/tags_actionbar_add"
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_tags_add"
+        android:showAsAction="ifRoom"
+        android:title="@string/settings_tags_actionbar_add" />
+
+</menu>

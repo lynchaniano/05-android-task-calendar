@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Author:		Alberto Gil Tesa
+	WebSite:	http://giltesa.com
+	License:	CC BY-NC-SA 3.0
+				http://goo.gl/CTYnN
+				
+	Project:	Task Calendar
+	Package:	com.giltesa.taskcalendar
+	File:		/TaskCalendar/res/xml/settings.xml
+-->
+<!-- 
+	NOTAS:
+		How to launch internal activity from PreferenceScreen
+			https://groups.google.com/forum/?fromgroups=#!topic/android-developers/jqEUXDyLnAs
+			
+		Shared Preferences
+			http://www.sgoliver.net/blog/?p=1731
+		
+		Sending Content to Other Apps
+			http://developer.android.com/training/sharing/send.html
+ -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- PREFERENCIAS DE LA APLICACION -->
+    <PreferenceCategory android:title="@string/main_menu_settings_app_category" >
+        
+        <!-- MODO DE ORDENAR LAS TAREAS -->
+	  	<ListPreference
+	  		android:key="main_menu_settings_app_sortTasksBy_key"
+	  		android:title="@string/main_menu_settings_app_sortTasksBy_title"
+	  		android:summary="@string/main_menu_settings_app_sortTasksBy_summary"
+	  		android:icon="@drawable/ic_settings_sort"
+	  		android:defaultValue="Oldest first"
+	  		android:entries="@array/main_menu_settings_app_sortTasksBy_listOptions"
+	  		android:entryValues="@array/main_menu_settings_app_sortTasksBy_listOptions" /> 
+	  	
+	  	<!-- APARIENCIA VISUAL -->
+        <ListPreference
+            android:key="main_menu_settings_app_theme_key"
+            android:title="@string/main_menu_settings_app_theme_title"
+            android:summary="@string/main_menu_settings_app_theme_summary"
+            android:icon="@drawable/ic_settings_theme"
+            android:defaultValue="Light"
+            android:entries="@array/main_menu_settings_app_theme_listOptions"
+            android:entryValues="@array/main_menu_settings_app_theme_listOptions" />	  	
+	  	
+	  	<!-- CONFIRMACION AL SALIR -->
+        <CheckBoxPreference
+            android:key="main_menu_settings_app_confirmExit_key"
+            android:title="@string/main_menu_settings_app_confirmExit_title"
+            android:summary="@string/main_menu_settings_app_confirmExit_summary"
+            android:icon="@drawable/ic_settings_exit"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+    
+    
+    <!-- PREFERENCIAS DE LOS CALENDARIOS -->
+    <PreferenceCategory android:title="@string/main_menu_settings_calendar_category" >
+        
+        <!-- GESTIONAR ETIQUETAS -->
+		<PreferenceScreen 
+			android:title="@string/main_menu_settings_calendar_manageTags_title" 
+		    android:summary="@string/main_menu_settings_calendar_manageTags_summary"
+		    android:icon="@drawable/ic_settings_tags" >
+			<intent 
+			    android:action="android.intent.action.MAIN" 
+			    android:targetPackage="com.giltesa.taskcalendar" 
+			    android:targetClass="com.giltesa.taskcalendar.activity.SettingsTags" /> 
+		</PreferenceScreen>
+
+        <!-- DIRECTORIO DE ADJUNTOS -->
+  		<EditTextPreference
+  			android:key="main_menu_settings_calendar_directoryStorage_key"
+  			android:title="@string/main_menu_settings_calendar_directoryStorage_title"
+  			android:summary="@string/main_menu_settings_calendar_directoryStorage_summary"
+  			android:icon="@drawable/ic_settings_directory" 
+  			android:defaultValue="@string/main_menu_settings_calendar_directoryStorage_defaultValue" />
+  		        		
+        <!-- COPIA DE SEGURIDAD LOCAL-->
+		<PreferenceScreen 
+			android:title="@string/main_menu_settings_calendar_manageBackup_title" 
+		    android:summary="@string/main_menu_settings_calendar_manageBackup_summary"
+			android:icon="@drawable/ic_settings_backup" >
+			<intent 
+			    android:action="android.intent.action.MAIN" 
+			    android:targetPackage="com.giltesa.taskcalendar" 
+			    android:targetClass="com.giltesa.taskcalendar.activity.SettingsBackups" />
+		</PreferenceScreen>
+		
+        <!-- COPIA DE SEGURIDAD EN DROPBOX -->
+		<PreferenceScreen 
+			android:title="@string/main_menu_settings_calendar_cloud_title" 
+		    android:summary="@string/main_menu_settings_calendar_cloud_summary"
+			android:icon="@drawable/ic_settings_dropbox" >
+			<intent 
+			    android:action="android.intent.action.MAIN" 
+			    android:targetPackage="com.giltesa.taskcalendar" 
+			    android:targetClass="com.giltesa.taskcalendar.activity.SettingsDropbox" />
+		</PreferenceScreen>        		
+        
+        
+    </PreferenceCategory>
+
+    
+    <!-- ACERCA DE -->
+    <PreferenceCategory android:title="@string/main_menu_settings_about_category" >
+
+        <!-- ACERCA DE -->
+		<PreferenceScreen 
+			android:title="@string/main_menu_settings_about_about_title" 
+			android:icon="@drawable/ic_settings_about" >
+			<intent 
+			    android:action="android.intent.action.MAIN" 
+			    android:targetPackage="com.giltesa.taskcalendar" 
+			    android:targetClass="com.giltesa.taskcalendar.activity.SettingsAbout" />
+		</PreferenceScreen>     	
+
+  		<!-- COMPARTIR APLICACION -->
+        <PreferenceScreen
+            android:id="@+id/main_menu_settings_about_share"
+            android:key="main_menu_settings_about_share_key"
+            android:title="@string/main_menu_settings_about_share_title" 
+			android:summary="@string/main_menu_settings_about_share_summary"
+			android:icon="@drawable/ic_settings_share" > 
+        </PreferenceScreen>  
+        
+        <!-- PUNTUAR EN EL MARKET -->
+        <PreferenceScreen
+            android:title="@string/main_menu_settings_about_rate_title"
+			android:summary="@string/main_menu_settings_about_rate_summary" 
+			android:icon="@drawable/ic_settings_googleplay" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="market://details?id=com.giltesa.taskcalendar" />
+        </PreferenceScreen>            
+        
+        <!-- INFORMAR SOBRE UN ERROR -->
+        <PreferenceScreen
+            android:title="@string/main_menu_settings_about_errorReport_title" 
+			android:summary="@string/main_menu_settings_about_errorReport_summary"
+			android:icon="@drawable/ic_settings_error">			
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/main_menu_settings_about_errorReport_text" >
+            </intent>
+        </PreferenceScreen>        
+        
+        <!-- LICENCIA DE SOFTWARE -->
+  		<PreferenceScreen
+	  		android:title="@string/main_menu_settings_about_softwareLicense_title"
+	  		android:icon="@drawable/ic_settings_license"> 
+			<intent 
+			    android:action="android.intent.action.MAIN" 
+			    android:targetPackage="com.giltesa.taskcalendar" 
+			    android:targetClass="com.giltesa.taskcalendar.activity.SettingsLicense" />	  		
+	  	</PreferenceScreen>
+	  	        
+    </PreferenceCategory>
+
+</PreferenceScreen>
