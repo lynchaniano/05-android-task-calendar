@@ -26,7 +26,7 @@
         android:paddingRight="10dip"
         android:paddingTop="20dip"
         android:text="@string/settings_tags_itemList_empty"
-        android:textSize="16dip"
+        android:textSize="16sp"
         android:visibility="gone" />
 	    
 	<ListView android:id="@+id/tags_list_items" 

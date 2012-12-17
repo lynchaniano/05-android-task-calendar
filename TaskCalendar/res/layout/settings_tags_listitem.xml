@@ -22,7 +22,6 @@
 		android:layout_height="wrap_content"
 		android:orientation="horizontal">
 
-		<!-- View -->
 		<TextView android:id="@+id/tags_listitem_color"
 			android:layout_width="12dip"
 			android:layout_height="fill_parent"

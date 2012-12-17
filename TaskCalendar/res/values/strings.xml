@@ -44,43 +44,58 @@
     <string name="main_menu_settings_calendar_manageTags_summary">Add, delete or edit the Tags</string> 
     <string name="main_menu_settings_calendar_directoryStorage_title">Directory Storage</string>
     <string name="main_menu_settings_calendar_directoryStorage_summary">The directory to save the files and backups</string>
-    <string name="main_menu_settings_calendar_directoryStorage_defaultValue">/sdcard/taskCalendar</string>
+    <string name="main_menu_settings_calendar_directoryStorage_defaultValue">/sdcard/TaskCalendar</string>
     <string name="main_menu_settings_calendar_manageBackup_title">Manage Backup</string>
     <string name="main_menu_settings_calendar_manageBackup_summary">Safeguard the data on the SD memory</string>
     <string name="main_menu_settings_calendar_cloud_title">Cloud Backup</string>
     <string name="main_menu_settings_calendar_cloud_summary">Store your backups on Dropbox</string>    
 
-
+    
     	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG -->
     	<string name="settings_tags_task">task</string>
     	<string name="settings_tags_itemList_empty">Add a tag using the top button</string>
     
-    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.ACTIONBAR -->
-    	<string name="settings_tags_actionbar_add">Add Tag</string>
-    	
-    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU -->
-    	<string name="settings_tags_popupmenu_name">Edit name</string>
-    	<string name="settings_tags_popupmenu_color">Edit color</string>
-    	<string name="settings_tags_popupmenu_delete">Delete tag</string>
-    	
-    		<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.NAME -->
-    		<string name="settings_tags_popupmenu_name_title">Enter the name of the tag</string>
-    		<string name="settings_tags_popupmenu_name_message">The current name:</string>
-    		<string name="settings_tags_popupmenu_name_defaultName">New Tag</string>
-    	
-	    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.COLOR -->
-	    	<string name="settings_tags_popupmenu_color_title">Pick a color</string>
+	    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.ACTIONBAR -->
+	    	<string name="settings_tags_actionbar_add">Add Tag</string>
 	    	
-    		<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.DELETE -->
-    		<string name="settings_tags_popupmenu_delete_title">Remove the tag</string>
-    		<string name="settings_tags_popupmenu_delete_message">Really want to delete the tag</string>	    	
+	    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU -->
+	    	<string name="settings_tags_popupmenu_name">Edit name</string>
+	    	<string name="settings_tags_popupmenu_color">Edit color</string>
+	    	<string name="settings_tags_popupmenu_delete">Delete tag</string>
 	    	
-    	
-    	
-    	
+	    		<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.NAME -->
+	    		<string name="settings_tags_popupmenu_name_title">Enter the name of the tag</string>
+	    		<string name="settings_tags_popupmenu_name_message">The current name:</string>
+	    		<string name="settings_tags_popupmenu_name_defaultName">New Tag</string>
+	    	
+		    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.COLOR -->
+		    	<string name="settings_tags_popupmenu_color_title">Pick a color</string>
+		    	
+	    		<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.DELETE -->
+	    		<string name="settings_tags_popupmenu_delete_title">Remove the tag</string>
+	    		<string name="settings_tags_popupmenu_delete_message">Really want to delete the tag</string>	    	
+	
+    			
     	<!-- MAIN.MENU.SETTINGS.CALENDAR.BACKUP -->
+    	<string name="settings_backup_itemList_empty">Create a backup using the top button</string>
+    	<string name="settings_backup_errorPath">Storage directory does not exist. You need to configure it correctly</string>
+    	<string name="settings_backup_correctCopy">Correct copy</string>
+    	<string name="settings_backup_incorrectCopy">Incorrect copy</string>
+    	
+    		<!-- MAIN.MENU.SETTINGS.CALENDAR.BACKUP.ACTIONBAR -->
+    		<string name="settings_backup_actionbar_new">Create a new backup</string>
+    	    
+	    	<!-- MAIN.MENU.SETTINGS.CALENDAR.BACKUP.POPUPMENU -->
+	    	<string name="settings_backup_popupmenu_restore">Restore backup</string>
+	    	<string name="settings_backup_popupmenu_delete">Delete backup</string>   
+	    	
+	    		<!-- MAIN.MENU.SETTINGS.CALENDAR.BACKUP.POPUPMENU.DELETE -->
+	    		<string name="settings_backup_popupmenu_restore_title">Restore the backup</string>
+	    		<string name="settings_backup_popupmenu_restore_message">Really want to restore the backup?</string>
+	    		<string name="settings_backup_popupmenu_delete_title">Remove the backup</string>
+	    		<string name="settings_backup_popupmenu_delete_message">Really want to delete the backup?</string>	    				    			
     
-    
+    	
     	<!-- MAIN.MENU.SETTINGS.CALENDAR.CLOUD -->    	
     	
     

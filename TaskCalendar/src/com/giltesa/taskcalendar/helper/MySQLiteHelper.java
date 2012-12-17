@@ -13,20 +13,44 @@ package com.giltesa.taskcalendar.helper;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
 public final class MySQLiteHelper extends SQLiteOpenHelper
 {
+	public static final String		PACKAGE_NAME		= "com.giltesa.taskcalendar";
+	public static final String		DATABASE_NAME		= "TaskCalendar";
+	private static final int		DATABASE_VERSION	= 13;
+	private static MySQLiteHelper	instance;
+
+
 	// Consultas SQL predefinidas:
-	private String	sqlCreateTags	= "CREATE TABLE tags(id INTEGER PRIMARY KEY, name TEXT, color TEXT );";
+	private String					sqlCreateTask		= "";
+	private String					sqlCreateTags		= "CREATE TABLE tags(id INTEGER PRIMARY KEY, name TEXT, color TEXT );";
 
 
 
-	public MySQLiteHelper(Context context, String nameDB, CursorFactory factory, int version)
+	/**
+	 * @param context
+	 */
+	public MySQLiteHelper(Context context)
 	{
-		super(context, nameDB, factory, version);
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+	}
+
+
+
+	/**
+	 * @param context
+	 * @return
+	 */
+	public static MySQLiteHelper getInstance(Context context)
+	{
+		if( instance == null )
+		{
+			instance = new MySQLiteHelper(context);
+		}
+		return instance;
 	}
 
 
@@ -56,4 +80,5 @@ public final class MySQLiteHelper extends SQLiteOpenHelper
 		db.execSQL("DROP TABLE IF EXISTS tags");
 		db.execSQL(sqlCreateTags);
 	}
+
 }

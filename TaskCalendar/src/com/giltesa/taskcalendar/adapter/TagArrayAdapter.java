@@ -7,6 +7,10 @@
     Project:    Task Calendar
     Package:    com.giltesa.taskcalendar.adapter
     File:       /TaskCalendar/src/com/giltesa/taskcalendar/adapter/TagArrayAdapter.java
+    
+    Class:
+    			public  class TagArrayAdapter
+    			private class TagViewHolder    
 */
 
 
@@ -22,7 +26,6 @@ import android.widget.TextView;
 
 import com.giltesa.taskcalendar.R;
 import com.giltesa.taskcalendar.util.Tag;
-import com.giltesa.taskcalendar.util.TagViewHolder;
 
 
 public class TagArrayAdapter extends ArrayAdapter< Tag >
@@ -33,6 +36,10 @@ public class TagArrayAdapter extends ArrayAdapter< Tag >
 
 
 
+	/**
+	 * @param context
+	 * @param tags
+	 */
 	public TagArrayAdapter(Activity context, Tag[] tags)
 	{
 		super(context, R.layout.settings_tags_listitem, tags);
@@ -42,6 +49,9 @@ public class TagArrayAdapter extends ArrayAdapter< Tag >
 
 
 
+	/**
+	 * 
+	 */
 	public View getView(int position, View item, ViewGroup parent)
 	{
 		TagViewHolder holder;
@@ -71,5 +81,19 @@ public class TagArrayAdapter extends ArrayAdapter< Tag >
 
 		return( item );
 	}
+
+
+
+	/**
+	 * Clase TagViewHolder:
+	 */
+	private class TagViewHolder
+	{
+		public TextView	id;
+		public TextView	name;
+		public TextView	color;
+		public TextView	counter;
+	}
+
 
 }
