@@ -13,6 +13,7 @@
 package com.giltesa.taskcalendar.util;
 
 
+
 public class Tag
 {
 
@@ -87,4 +88,5 @@ public class Tag
 	{
 		this.counter = counter;
 	}
+
 }

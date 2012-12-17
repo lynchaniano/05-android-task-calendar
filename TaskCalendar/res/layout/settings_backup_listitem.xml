@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Author:     Alberto Gil Tesa
+    WebSite:    http://giltesa.com
+    License:    CC BY-NC-SA 3.0
+                http://goo.gl/CTYnN
+
+    Project:    Task Calendar
+    Package:    com.giltesa.taskcalendar
+    File:       /TaskCalendar/res/layout/settings_backup_listitem.xml
+
+-->
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" 
+    android:padding="10dp" >
+
+    <TextView
+	    android:id="@+id/backup_listitem_filePath"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:visibility="invisible" />
+	
+	<TextView
+	    android:id="@+id/backup_listitem_date"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignTop="@+id/backup_listitem_fileName"
+	    android:layout_toRightOf="@+id/backup_listitem_fileName"
+	    android:fadingEdge="vertical"
+	    android:textSize="16sp"
+	    android:textStyle="bold" />
+	
+	<TextView
+	    android:id="@+id/backup_listitem_length"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignBottom="@+id/backup_listitem_date"
+	    android:layout_alignParentRight="true"
+	    android:textSize="12sp" />
+</RelativeLayout>

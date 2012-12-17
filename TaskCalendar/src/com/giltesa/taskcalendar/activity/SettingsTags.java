@@ -63,11 +63,10 @@ import com.giltesa.taskcalendar.util.ColorPickerDialog.OnColorChangedListener;
 import com.giltesa.taskcalendar.util.Tag;
 
 
-public class SettingsTags extends Activity// implements ColorPickerDialog.OnColorChangedListener
+public class SettingsTags extends Activity
 {
-	protected PreferenceHelper	prefs;
+	private PreferenceHelper	prefs;
 	private Tag[]				tags;
-	private final int			dataBaseVersion	= 13;
 
 
 
@@ -147,7 +146,7 @@ public class SettingsTags extends Activity// implements ColorPickerDialog.OnColo
 
 
 										// Se actualiza la BD:
-										SQLiteDatabase db = new MySQLiteHelper(SettingsTags.this, "TaskCalendar", null, dataBaseVersion).getWritableDatabase();
+										SQLiteDatabase db = MySQLiteHelper.getInstance(SettingsTags.this).getWritableDatabase();
 										db.execSQL("UPDATE tags SET name = ? WHERE id = ?;", new Object[] { tag.getName(), tag.getID() });
 										db.close();
 
@@ -170,7 +169,7 @@ public class SettingsTags extends Activity// implements ColorPickerDialog.OnColo
 										tag.setColor("#" + temp.substring(2, temp.length()));
 
 										// Se actualiza la BD:
-										SQLiteDatabase db = new MySQLiteHelper(SettingsTags.this, "TaskCalendar", null, dataBaseVersion).getWritableDatabase();
+										SQLiteDatabase db = MySQLiteHelper.getInstance(SettingsTags.this).getWritableDatabase();
 										db.execSQL("UPDATE tags SET color = ? WHERE id = ?;", new Object[] { tag.getColor(), tag.getID() });
 										db.close();
 
@@ -204,7 +203,7 @@ public class SettingsTags extends Activity// implements ColorPickerDialog.OnColo
 									public void onClick(DialogInterface dialog, int whichButton)
 									{
 										// Se elimina el tag de la BD:
-										SQLiteDatabase db = new MySQLiteHelper(SettingsTags.this, "TaskCalendar", null, dataBaseVersion).getWritableDatabase();
+										SQLiteDatabase db = MySQLiteHelper.getInstance(SettingsTags.this).getWritableDatabase();
 										db.execSQL("DELETE FROM tags WHERE id = ?;", new Object[] { tag.getID() });
 										db.close();
 
@@ -237,6 +236,8 @@ public class SettingsTags extends Activity// implements ColorPickerDialog.OnColo
 
 
 	/**
+	 * Devuelve las etiquetas de la base de datos como un array de Tags.
+	 * 
 	 * @return
 	 */
 	private Tag[] getTagsInDataBase()
@@ -244,8 +245,7 @@ public class SettingsTags extends Activity// implements ColorPickerDialog.OnColo
 		Tag[] tags;
 
 		// Se realiza una conexion a la base de datos "TaskCalendar":
-		MySQLiteHelper tDB = new MySQLiteHelper(this, "TaskCalendar", null, dataBaseVersion);
-		SQLiteDatabase db = tDB.getWritableDatabase();
+		SQLiteDatabase db = MySQLiteHelper.getInstance(SettingsTags.this).getWritableDatabase();
 
 
 		// Después se recupera el número de etiquetas que hay en la tabla, se instancia el array de "tags" con el tamaño de tags recuperado de la consulta a la base de datos:
@@ -287,32 +287,20 @@ public class SettingsTags extends Activity// implements ColorPickerDialog.OnColo
 
 
 	/**
-	 * 
-	 */
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus)
-	{
-		super.onWindowFocusChanged(hasFocus);
-	}
-
-
-
-	/**
-	 * 
+	 * Se infla el menu del ActionBar.
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.settings_tags_actionbar, menu);
-
 		return true;
 	}
 
 
 
 	/**
-	 * 
+	 * Eventos lanzados desde los botones del ActionBar.
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
@@ -341,7 +329,7 @@ public class SettingsTags extends Activity// implements ColorPickerDialog.OnColo
 					public void onClick(DialogInterface dialog, int whichButton)
 					{
 						// Se inserta la nueva tag en la BD:
-						SQLiteDatabase db = new MySQLiteHelper(SettingsTags.this, "TaskCalendar", null, dataBaseVersion).getWritableDatabase();
+						SQLiteDatabase db = MySQLiteHelper.getInstance(SettingsTags.this).getWritableDatabase();
 						String name = validateNameTag(input.getText(), getString(R.string.settings_tags_popupmenu_name_defaultName));
 						db.execSQL("INSERT INTO tags VALUES ( NULL, ?, '#BDBDBD' );", new Object[] { name });
 						db.close();
@@ -377,4 +365,5 @@ public class SettingsTags extends Activity// implements ColorPickerDialog.OnColo
 	{
 		return ( nameTag.toString().equals("") ) ? nameDefault : "" + nameTag;
 	}
+	
 }
