@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Author:		Alberto Gil Tesa
+	WebSite:	http://giltesa.com
+	License:	CC BY-NC-SA 3.0
+				http://goo.gl/CTYnN
+				
+	Project:	Task Calendar
+	Package:	com.giltesa.taskcalendar
+	File:		/TaskCalendar/res/menu/new_task_actionbar.xml
+-->
+
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/main_newtask_actionbar_save"
+        android:orderInCategory="1"
+		android:icon="@drawable/ic_backup_new"        
+        android:showAsAction="ifRoom"
+        android:title="@string/main_newtask_actionbar_save" />
+</menu>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Author:     Alberto Gil Tesa
+    WebSite:    http://giltesa.com
+    License:    CC BY-NC-SA 3.0
+                http://goo.gl/CTYnN
+
+    Project:    Task Calendar
+    Package:    com.giltesa.taskcalendar
+    File:       /TaskCalendar/res/layout/settings_tags_listitem_spinner.xml
+
+    android:id="@android:id/text1"
+-->
+
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="?android:attr/spinnerItemStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ellipsize="marquee"
+    android:padding="15dp"
+    android:singleLine="true" />

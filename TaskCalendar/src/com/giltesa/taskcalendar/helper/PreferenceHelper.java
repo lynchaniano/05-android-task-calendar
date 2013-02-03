@@ -28,9 +28,11 @@ public final class PreferenceHelper
 	private static final String	PREF_THEME	= "main_menu_settings_app_theme_key";
 	private static final String	PREF_EXIT	= "main_menu_settings_app_confirmExit_key";
 	private static final String	PREF_DIR	= "main_menu_settings_calendar_directoryStorage_key";
+
+
+
 	//private static final String	PREF_ABOUT	= "main_menu_settings_about_about_key";
 	//private static final String	PREF_SHARE	= "main_menu_settings_about_share_key";
-
 
 
 	public PreferenceHelper(Activity context)
@@ -42,7 +44,18 @@ public final class PreferenceHelper
 
 	public String getSortTask()
 	{
-		return PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_SORT, "");
+		String order = PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_SORT, "");
+		String result = "";
+
+		String[] listOrders = context.getResources().getStringArray(R.array.main_menu_settings_app_sortTasksBy_listOptions);
+
+
+		if( order.equals(listOrders[0]) ) // Oldest first
+			result += "creation_date ASC";
+		else if( order.equals(listOrders[1]) ) // Newest first
+			result += "creation_date DESC";
+
+		return result;
 	}
 
 

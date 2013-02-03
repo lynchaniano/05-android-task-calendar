@@ -9,8 +9,6 @@
     File:       /TaskCalendar/src/com/giltesa/taskcalendar/activity/SettingsBackups.java
 */
 
-// Log.e("Backup", "" + MySQLiteHelper.getOutoutFileDataBase(this).toString());
-
 
 package com.giltesa.taskcalendar.activity;
 
@@ -26,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -120,7 +117,7 @@ public class SettingsBackups extends Activity
 									public void onClick(DialogInterface dialog, int whichButton)
 									{
 										// Se restaura el backup en la BD:
-										backupHelper.restoreBackup(backup.getFilePath());
+										backupHelper.restoreBackup(backup.getFile());
 
 										// Se recuperan los backups:
 										if( backupHelper.checkPathBackups() )
@@ -134,8 +131,8 @@ public class SettingsBackups extends Activity
 									}
 								});
 								alert.show();
-								return true;							
-							
+								return true;
+
 							case R.id.settings_backup_popupmenu_delete:
 								// Se crea un AlertDialog y se le asigna un titulo y un mensaje:
 								alert = new AlertDialog.Builder(SettingsBackups.this);
@@ -149,7 +146,7 @@ public class SettingsBackups extends Activity
 									public void onClick(DialogInterface dialog, int whichButton)
 									{
 										// Se elimina el backup de la BD:
-										backupHelper.deleteBackup(backup.getFilePath());
+										backupHelper.deleteBackup(backup.getFile());
 
 										// Se recuperan los backups:
 										if( backupHelper.checkPathBackups() )
@@ -181,6 +178,9 @@ public class SettingsBackups extends Activity
 
 
 
+	/**
+	 * 
+	 */
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus)
 	{
@@ -202,6 +202,9 @@ public class SettingsBackups extends Activity
 
 
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -230,11 +233,9 @@ public class SettingsBackups extends Activity
 						else
 							Toast.makeText(SettingsBackups.this, getString(R.string.settings_backup_incorrectCopy), Toast.LENGTH_LONG).show();
 
-						
 						// Se recuperan los backups:
 						if( backupHelper.checkPathBackups() )
 							arrayBackups = backupHelper.getArrayBackupsInMemorySD();
-
 
 						// Se actualiza el ListView con los cambios:
 						BackupArrayAdapter adapter = new BackupArrayAdapter(SettingsBackups.this, arrayBackups);

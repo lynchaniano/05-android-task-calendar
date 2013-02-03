@@ -34,6 +34,9 @@ public class BackupHelper
 
 
 
+	/**
+	 * @param context
+	 */
 	public BackupHelper(Activity context)
 	{
 		pathBackups = new File(new PreferenceHelper(context).getDirectory());
@@ -43,6 +46,50 @@ public class BackupHelper
 
 
 	/**
+	 * Si el directorio existe se devuelve true, si no existe se intenta crear, si se consigue crear se devuelve true. En caso contrario false.
+	 * 
+	 * @return
+	 */
+	public Boolean checkPathBackups()
+	{
+		Boolean result = true;
+
+		if( !pathBackups.exists() )
+		{
+			result = pathBackups.mkdirs();
+		}
+
+		return result;
+	}
+
+
+
+	/**
+	 * Devuelve un array de objetos Backup.
+	 * Antes de llamar a este metodo habria que haber llamado a checkPathBackups() para asegurarse de que el directorio existe.
+	 * 
+	 * @return
+	 */
+	public Backup[] getArrayBackupsInMemorySD()
+	{
+		File[] listFiles = pathBackups.listFiles();
+		Backup[] arrayBackups = new Backup[listFiles.length];
+
+		int i = 0;
+		for( File f : listFiles )
+		{
+			arrayBackups[i] = new Backup(f);
+			i++;
+		}
+
+		return arrayBackups;
+	}
+
+
+
+	/**
+	 * Manda copiar la base de datos al directorio de copias de seguridad.
+	 * 
 	 * @return
 	 */
 	@SuppressLint( "SimpleDateFormat" )
@@ -57,9 +104,15 @@ public class BackupHelper
 
 
 
-	public Boolean restoreBackup(String input)
+	/**
+	 * Manda copiar el fichero recibido al directorio de bases de datos.
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public Boolean restoreBackup(File input)
 	{
-		return copyFile(new File(input), pathDataBase);
+		return copyFile(input, pathDataBase);
 	}
 
 
@@ -103,38 +156,14 @@ public class BackupHelper
 
 
 	/**
-	 * Devuelve un array de objetos Backup.
-	 * Antes de llamar a este metodo habria que haber llamado a checkPathBackups() para asegurarse de que el directorio existe.
+	 * Intenta eliminar el fichero recibido como parametro si existe.
 	 * 
+	 * @param file
 	 * @return
 	 */
-	public Backup[] getArrayBackupsInMemorySD()
-	{
-		File[] listFiles = pathBackups.listFiles();
-		Backup[] arrayBackups = new Backup[listFiles.length];
-
-		int i = 0;
-		for( File f : listFiles )
-		{
-			arrayBackups[i] = new Backup(f, f.lastModified(), f.length());
-			i++;
-		}
-
-		return arrayBackups;
-	}
-
-
-
-	/**
-	 * Intenta eliminar el backup de la SD indicado.
-	 * 
-	 * @param path
-	 * @return
-	 */
-	public Boolean deleteBackup(String path)
+	public Boolean deleteBackup(File file)
 	{
 		Boolean result = false;
-		File file = new File(path);
 
 		if( file.exists() )
 			result = file.delete();
@@ -142,22 +171,4 @@ public class BackupHelper
 		return result;
 	}
 
-
-
-	/**
-	 * Si el directorio existe se devuelve true, si no existe se intenta crear, si se consigue crear se devuelve true. En caso contrario false.
-	 * 
-	 * @return
-	 */
-	public Boolean checkPathBackups()
-	{
-		Boolean result = true;
-
-		if( !pathBackups.exists() )
-		{
-			result = pathBackups.mkdirs();
-		}
-
-		return result;
-	}
 }

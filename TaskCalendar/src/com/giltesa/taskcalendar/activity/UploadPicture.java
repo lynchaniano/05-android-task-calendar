@@ -70,6 +70,7 @@ public class UploadPicture extends AsyncTask< Void, Long, Boolean >
 
 
 
+	@SuppressWarnings( "deprecation" )
 	public UploadPicture(Context context, DropboxAPI< ? > api, String dropboxPath, File file)
 	{
 		// We set the context this way so we don't accidentally leak activities

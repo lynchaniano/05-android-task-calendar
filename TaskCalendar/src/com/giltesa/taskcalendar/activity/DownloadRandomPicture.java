@@ -81,6 +81,7 @@ public class DownloadRandomPicture extends AsyncTask< Void, Long, Boolean >
 
 
 
+	@SuppressWarnings( "deprecation" )
 	public DownloadRandomPicture(Context context, DropboxAPI< ? > api, String dropboxPath, ImageView view)
 	{
 		// We set the context this way so we don't accidentally leak activities
@@ -138,13 +139,13 @@ public class DownloadRandomPicture extends AsyncTask< Void, Long, Boolean >
 				return false;
 			}
 
-			// Make a list of everything in it that we can get a thumbnail for
+			// Make a listView of everything in it that we can get a thumbnail for
 			ArrayList< Entry > thumbs = new ArrayList< Entry >();
 			for( Entry ent : dirent.contents )
 			{
 				if( ent.thumbExists )
 				{
-					// Add it to the list of thumbs we can choose from
+					// Add it to the listView of thumbs we can choose from
 					thumbs.add(ent);
 				}
 			}

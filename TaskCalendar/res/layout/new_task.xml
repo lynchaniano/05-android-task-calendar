@@ -8,17 +8,80 @@
     Project:    Task Calendar
     Package:    com.giltesa.taskcalendar
     File:       /TaskCalendar/res/layout/new_task.xml
+    
+    
+    NOTAS:
+    	http://developer.android.com/guide/topics/ui/controls/spinner.html
+    	http://androideity.com/2011/08/27/controles-de-seleccion-en-android-spinner/
+    	http://www.congdegnu.es/2011/06/02/spinners-en-android-tres-formas-de-poblarlos/
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Activity New Task"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"> 
 
-</LinearLayout>
+	<RelativeLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:padding="10dp" >
+	
+	    <!-- Title -->
+	    <TextView
+	        android:id="@+id/main_newtask_title_label"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true"
+	        android:text="@string/main_newtask_title" />
+	
+	    <EditText
+	        android:id="@+id/main_newtask_title_text"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_below="@+id/main_newtask_title_label"
+	        android:ems="10" >
+	        <requestFocus />
+	    </EditText>
+	
+	    <!-- Description -->
+	    <TextView
+	        android:id="@+id/main_newtask_description_label"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/main_newtask_title_text"
+	        android:layout_below="@+id/main_newtask_title_text"
+	        android:layout_marginTop="26dp"
+	        android:text="@string/main_newtask_description" />
+	
+	    <EditText
+	        android:id="@+id/main_newtask_description_text"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_below="@+id/main_newtask_description_label"
+	        android:ems="10"
+	        android:inputType="textMultiLine" />
+	
+	    <!-- Tag -->
+	    <TextView
+	        android:id="@+id/main_newtask_tag_label"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_below="@+id/main_newtask_description_text"
+	        android:layout_marginTop="34dp"
+	        android:text="@string/main_newtask_tag" />
+	
+	    <Spinner
+	        android:id="@+id/main_newtask_tag_spinner"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/main_newtask_tag_label"
+	        android:layout_below="@+id/main_newtask_tag_label" />
+	
+	</RelativeLayout>
+	
+</ScrollView>

@@ -25,40 +25,50 @@ package com.giltesa.taskcalendar.activity;
 
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.text.ParseException;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.android.AuthActivity;
+import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.client2.exception.DropboxUnlinkedException;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.Session.AccessType;
 import com.dropbox.client2.session.TokenPair;
 import com.giltesa.taskcalendar.R;
+import com.giltesa.taskcalendar.adapter.BackupArrayAdapter;
+import com.giltesa.taskcalendar.helper.BackupHelper;
 import com.giltesa.taskcalendar.helper.PreferenceHelper;
+import com.giltesa.taskcalendar.util.Backup;
 
 
+@SuppressLint( "NewApi" )
 public class SettingsDropbox extends Activity
 {
 	///////////////////////////////////////////////////////////////////////////
@@ -88,38 +98,33 @@ public class SettingsDropbox extends Activity
 
 	DropboxAPI< AndroidAuthSession >	mApi;
 
-	private boolean						mLoggedIn;
-
-	// Android widgets
-	private Button						mSubmit;
-	private LinearLayout				mDisplay;
-	private Button						mPhoto;
-	//	private Button						mRoulette;
-
-
-	private ImageView					mImage;
-
-	private final String				PHOTO_DIR			= "/";
-
-	final static private int			NEW_PICTURE			= 1;
-	private String						mCameraFileName;
-
 	protected PreferenceHelper			prefs;
+	private MenuItem					menuItemUpdate, menuItemLogin, menuItemLogout;
+	private Backup[]					backupsCloud;
+	private ListView					listView;
+	private Activity					context;
 
 
 
+	/**
+	 * 
+	 */
+	@TargetApi( Build.VERSION_CODES.HONEYCOMB )
+	@SuppressLint( "NewApi" )
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		// Se aplica el theme que corresponda:
 		prefs = new PreferenceHelper(this);
 		setTheme(prefs.getTheme());
 
+		// Se llama al padre y se establece el layout para el activity:
 		super.onCreate(savedInstanceState);
 
-		if( savedInstanceState != null )
-		{
-			mCameraFileName = savedInstanceState.getString("mCameraFileName");
-		}
+		//Permite que el icono de la barra de name se comporte como el boton atras, y su evento sea tratado desde onOptionsItemSelected()
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+
 
 		// We create a new AuthSession so that we can use the Dropbox API.
 		AndroidAuthSession session = buildSession();
@@ -128,101 +133,32 @@ public class SettingsDropbox extends Activity
 		// Basic Android widgets
 		setContentView(R.layout.settings_dropbox);
 
-		//Permite que el icono de la barra de name se comporte como el boton atras, y su evento sea tratado desde onOptionsItemSelected()
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		//----------------------------------------
-
 		checkAppKeySetup();
 
-		mSubmit = (Button)findViewById(R.id.auth_button);
+		listView = (ListView)findViewById(R.id.dropbox_list_items);
 
-		mSubmit.setOnClickListener(new OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				// This logs you out if you're logged in, or vice versa
-				if( mLoggedIn )
-				{
-					logOut();
-				}
-				else
-				{
-					// Start the remote authentication
-					mApi.getSession().startAuthentication(SettingsDropbox.this);
-				}
-			}
-		});
-
-		mDisplay = (LinearLayout)findViewById(R.id.logged_in_display);
-
-		// This is where a photo is displayed
-		mImage = (ImageView)findViewById(R.id.image_view);
-
-		// This is the button to take a photo
-		mPhoto = (Button)findViewById(R.id.photo_button);
-
-		mPhoto.setOnClickListener(new OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				Intent intent = new Intent();
-				// Picture from camera
-				intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-
-				// This is not the right way to do this, but for some reason, having
-				// it store it in
-				// MediaStore.Images.Media.EXTERNAL_CONTENT_URI isn't working right.
-
-				Date date = new Date();
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd-kk-mm-ss");
-
-				String newPicFile = df.format(date) + ".jpg";
-				String outPath = "/sdcard/" + newPicFile;
-				File outFile = new File(outPath);
-
-				mCameraFileName = outFile.toString();
-				Uri outuri = Uri.fromFile(outFile);
-				intent.putExtra(MediaStore.EXTRA_OUTPUT, outuri);
-				Log.i("Dropbox", "Importing New Picture: " + mCameraFileName);
-				try
-				{
-					startActivityForResult(intent, NEW_PICTURE);
-				}
-				catch( ActivityNotFoundException e )
-				{
-					showToast("There doesn't seem to be a camera.");
-				}
-			}
-		});
-
-
-		// This is the button to take a photo
-		/*mRoulette = (Button)findViewById(R.id.roulette_button);
-		mRoulette.setOnClickListener(new OnClickListener()
-		{
-			public void onClick(View v)
-			{
-
-			}
-		});*/
+		context = this;
 
 		// Display the proper UI state if logged in or not
-		setLoggedIn(mApi.getSession().isLinked());
-
+		//setLoggedIn(mApi.getSession().isLinked());
 	}
 
 
 
+	/**
+	 * 
+	 */
 	@Override
 	protected void onSaveInstanceState(Bundle outState)
 	{
-		outState.putString("mCameraFileName", mCameraFileName);
 		super.onSaveInstanceState(outState);
 	}
 
 
 
+	/**
+	 * 
+	 */
 	@Override
 	protected void onResume()
 	{
@@ -254,46 +190,13 @@ public class SettingsDropbox extends Activity
 
 
 
-	// This is what gets called on finishing a media piece to import
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		if( requestCode == NEW_PICTURE )
-		{
-			// return from file upload
-			if( resultCode == Activity.RESULT_OK )
-			{
-				Uri uri = null;
-				if( data != null )
-				{
-					uri = data.getData();
-				}
-				if( uri == null && mCameraFileName != null )
-				{
-					uri = Uri.fromFile(new File(mCameraFileName));
-				}
-				File file = new File(mCameraFileName);
-
-				if( uri != null )
-				{
-					UploadPicture upload = new UploadPicture(this, mApi, PHOTO_DIR, file);
-					upload.execute();
-				}
-			}
-			else
-			{
-				Log.w("Dropbox", "Unknown Activity Result from mediaImport: " + resultCode);
-			}
-		}
-	}
-
-
-
+	/**
+	 * Cierra la sesion de Dropbox
+	 */
 	private void logOut()
 	{
 		// Remove credentials from the session
 		mApi.getSession().unlink();
-
 		// Clear our stored keys
 		clearKeys();
 		// Change UI state to display logged out version
@@ -303,26 +206,35 @@ public class SettingsDropbox extends Activity
 
 
 	/**
-	 * Convenience function to change UI state based on being logged in
+	 * Desde el metodo setLoggedIn se puede cambiar la interfaz del activity segun si
+	 * hemos iniciado sesion o no en la cuenta de dropbox.
 	 */
 	private void setLoggedIn(boolean loggedIn)
 	{
-		mLoggedIn = loggedIn;
+		// Si estamos autenticados se muestra el boton de actualizacion y cierre de sesion:
 		if( loggedIn )
 		{
-			mSubmit.setText("Unlink from Dropbox");
-			mDisplay.setVisibility(View.VISIBLE);
+			menuItemUpdate.setVisible(true);
+			menuItemLogin.setVisible(false);
+			menuItemLogout.setVisible(true);
+			loadListView();
 		}
+		// En caso contrario solo se muestra el boton de inicio de sesion:
 		else
 		{
-			mSubmit.setText("Link with Dropbox");
-			mDisplay.setVisibility(View.GONE);
-			mImage.setImageDrawable(null);
+			menuItemUpdate.setVisible(false);
+			menuItemLogin.setVisible(true);
+			menuItemLogout.setVisible(false);
+			BackupArrayAdapter adapter = new BackupArrayAdapter(this, new Backup[0]);
+			listView.setAdapter(adapter);
 		}
 	}
 
 
 
+	/**
+	 * 
+	 */
 	private void checkAppKeySetup()
 	{
 		// Check to make sure that we have a valid app key
@@ -348,6 +260,9 @@ public class SettingsDropbox extends Activity
 
 
 
+	/**
+	 * @param msg
+	 */
 	private void showToast(String msg)
 	{
 		Toast error = Toast.makeText(this, msg, Toast.LENGTH_LONG);
@@ -400,6 +315,9 @@ public class SettingsDropbox extends Activity
 
 
 
+	/**
+	 * 
+	 */
 	private void clearKeys()
 	{
 		SharedPreferences prefs = getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
@@ -410,6 +328,9 @@ public class SettingsDropbox extends Activity
 
 
 
+	/**
+	 * @return
+	 */
 	private AndroidAuthSession buildSession()
 	{
 		AppKeyPair appKeyPair = new AppKeyPair(APP_KEY, APP_SECRET);
@@ -431,6 +352,22 @@ public class SettingsDropbox extends Activity
 
 
 
+	/**
+	 * Se infla el menu del ActionBar.
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.settings_cloud_actionbar, menu);
+		return true;
+	}
+
+
+
+	/**
+	 * 
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -442,10 +379,156 @@ public class SettingsDropbox extends Activity
 				startActivity(intent);
 				break;
 
+			case R.id.cloud_actionbar_update:
+				uploadBackups();
+				break;
+
+			case R.id.cloud_actionbar_login:
+				mApi.getSession().startAuthentication(SettingsDropbox.this);
+				break;
+
+			case R.id.cloud_actionbar_logout:
+				logOut();
+				break;
+
 			default:
 				break;
 		}
 		return true;
 	}
 
+
+
+	/**
+	 * Desde este metodo pueden obtenerse las referencias a los botones del Actionbar, en principio
+	 * no se puede desde otro metodo ya que se obtionen las referencias a NULL.
+	 */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		super.onPrepareOptionsMenu(menu);
+		menuItemUpdate = menu.findItem(R.id.cloud_actionbar_update);
+		menuItemLogin = menu.findItem(R.id.cloud_actionbar_login);
+		menuItemLogout = menu.findItem(R.id.cloud_actionbar_logout);
+
+		setLoggedIn(mApi.getSession().isLinked());
+		return true;
+	}
+
+
+
+	/**
+	 * 
+	 */
+	private void loadListView()
+	{
+		// http://stackoverflow.com/questions/10928816/dropbox-and-android-get-files-names-via-api-call
+		// https://www.dropbox.com/developers/start/files#android
+		// https://www.dropbox.com/static/developers/dropbox-android-sdk-1.5.3-docs/
+
+		try
+		{
+			// Se recuperan los datos de Dropbox:
+			Entry entries = mApi.metadata("/", 100, null, true, null);
+
+			// Se recorren los ficheros para contarlos:
+			int numFiles = 0;
+			for( Entry e : entries.contents )
+				if( !e.isDeleted && !e.isDir )
+					numFiles++;
+
+			backupsCloud = new Backup[numFiles];
+
+			// Se recuperan todos los ficheros y se guardan en el array:
+			int i = 0;
+			for( Entry e : entries.contents )
+			{
+				if( !e.isDeleted && !e.isDir )
+				{
+					backupsCloud[i] = new Backup(new File(e.path), e.modified, e.size);
+					i++;
+				}
+			}
+
+			// Una vez con toda la información en el array se traspasa al ListView:
+			BackupArrayAdapter adapter = new BackupArrayAdapter(this, backupsCloud);
+			listView.setAdapter(adapter);
+		}
+		catch( DropboxException e )
+		{
+			e.printStackTrace();
+		}
+	}
+
+
+
+	/**
+	 * 
+	 */
+	private void uploadBackups()
+	{
+		// Se comparan los ficheros locales y los de dropbox
+		// Despues se suben los que no esten en dropbox
+
+		Backup[] backupsSD = new BackupHelper(this).getArrayBackupsInMemorySD();
+
+
+		for( Backup bSD : backupsSD )
+		{
+			boolean copiar = true;
+
+			for( Backup bClud : backupsCloud )
+			{
+				String temp1 = bSD.getFile().getName();
+				String temp2 = bClud.getFile().getName();
+
+				if( temp1.equals(temp2) )
+					copiar = false;
+			}
+
+			if( copiar )
+			{
+				// Se sube el fichero a dropbox 
+				////////////////////////////////////////////////////
+				// Uploading content.
+				FileInputStream inputStream = null;
+				try
+				{
+					File file = bSD.getFile();
+					inputStream = new FileInputStream(bSD.getFile());
+					Entry newEntry = mApi.putFile(file.getName(), inputStream, file.length(), null, null);
+					Log.i("DbExampleLog", "The uploaded file's rev is: " + newEntry.rev);
+				}
+				catch( DropboxUnlinkedException e )
+				{
+					// User has unlinked, ask them to link again here.
+					Log.e("DbExampleLog", "User has unlinked.");
+				}
+				catch( DropboxException e )
+				{
+					Log.e("DbExampleLog", "Something went wrong while uploading.");
+				}
+				catch( FileNotFoundException e )
+				{
+					Log.e("DbExampleLog", "File not found.");
+				}
+				finally
+				{
+					if( inputStream != null )
+					{
+						try
+						{
+							inputStream.close();
+						}
+						catch( IOException e )
+						{}
+					}
+				}
+				////////////////////////////////////////////////////
+			}
+		}
+
+
+		loadListView();
+	}
 }

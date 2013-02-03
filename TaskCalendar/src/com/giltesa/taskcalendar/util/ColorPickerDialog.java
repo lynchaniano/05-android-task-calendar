@@ -1,6 +1,7 @@
 package com.giltesa.taskcalendar.util;
 
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -74,6 +75,7 @@ public class ColorPickerDialog extends Dialog
 
 
 
+		@SuppressLint( "DrawAllocation" )
 		@Override
 		protected void onDraw(Canvas canvas)
 		{
@@ -176,6 +178,7 @@ public class ColorPickerDialog extends Dialog
 
 
 
+		@SuppressWarnings( "unused" )
 		private int rotateColor(int color, float rad)
 		{
 			float deg = rad * 180 / 3.1415927f;

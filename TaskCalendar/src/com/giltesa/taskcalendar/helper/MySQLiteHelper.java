@@ -20,13 +20,13 @@ public final class MySQLiteHelper extends SQLiteOpenHelper
 {
 	public static final String		PACKAGE_NAME		= "com.giltesa.taskcalendar";
 	public static final String		DATABASE_NAME		= "TaskCalendar";
-	private static final int		DATABASE_VERSION	= 13;
+	private static final int		DATABASE_VERSION	= 15;
 	private static MySQLiteHelper	instance;
 
 
 	// Consultas SQL predefinidas:
-	private String					sqlCreateTask		= "";
-	private String					sqlCreateTags		= "CREATE TABLE tags(id INTEGER PRIMARY KEY, name TEXT, color TEXT );";
+	private String					sqlCreateTask		= "CREATE TABLE task( id INTEGER PRIMARY KEY, tag_id INTEGER, creation_date TEXT, title TEXT, description TEXT );";
+	private String					sqlCreateTags		= "CREATE TABLE tags( id INTEGER PRIMARY KEY, name TEXT, color TEXT );";
 
 
 
@@ -63,6 +63,7 @@ public final class MySQLiteHelper extends SQLiteOpenHelper
 	public void onCreate(SQLiteDatabase db)
 	{
 		//Se ejecuta la sentencia SQL de creación de la tabla
+		db.execSQL(sqlCreateTask);
 		db.execSQL(sqlCreateTags);
 
 	}
@@ -77,6 +78,8 @@ public final class MySQLiteHelper extends SQLiteOpenHelper
 	public void onUpgrade(SQLiteDatabase db, int versionAnterior, int versionNueva)
 	{
 		//Por ahora, si se indica que la version de la base de datos se ha cambiado, se elimina para luego crearse de nuevo:
+		db.execSQL("DROP TABLE IF EXISTS task");
+		db.execSQL(sqlCreateTask);
 		db.execSQL("DROP TABLE IF EXISTS tags");
 		db.execSQL(sqlCreateTags);
 	}

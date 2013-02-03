@@ -20,16 +20,18 @@
 
 package com.giltesa.taskcalendar.activity;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,15 +39,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giltesa.taskcalendar.R;
+import com.giltesa.taskcalendar.adapter.TaskArrayAdapter;
+import com.giltesa.taskcalendar.helper.MySQLiteHelper;
 import com.giltesa.taskcalendar.helper.PreferenceHelper;
+import com.giltesa.taskcalendar.helper.TagHelper;
+import com.giltesa.taskcalendar.helper.TaskHelper;
+import com.giltesa.taskcalendar.util.Tag;
+import com.giltesa.taskcalendar.util.Task;
 
 
+@SuppressLint( "NewApi" )
 public class Main extends FragmentActivity implements SearchView.OnQueryTextListener
 {
 
@@ -66,10 +77,17 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 	private SearchView			mSearchView;
 
 	protected PreferenceHelper	prefs;
+	private static Activity		context;
+	static Tag[]				arrayTags;
+	static Task[]				arrayTasks;
+	static ListView				listTask;
+	static TaskArrayAdapter		adapter;
 
 
 
-
+	/**
+	 * 
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -84,9 +102,10 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager)findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+
+		context = this;
+		arrayTags = new TagHelper(context).getArrayTags();
 	}
-
-
 
 
 
@@ -122,6 +141,9 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 
 
+	/**
+	 * 
+	 */
 	@Override
 	protected void onResume()
 	{
@@ -152,6 +174,10 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 
 
+	/**
+	 * 
+	 */
+	@SuppressLint( "NewApi" )
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -174,7 +200,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 	 * Desde el metodo onOptionsItemSelected(), se tratan los eventos que produzcan los diferentes Items de los Menus.
 	 * Se tratan tanto los eventos del menu del boton fisico como los producidos por el boton del ActionBar
 	 */
-	@Override
+	@SuppressLint( "NewApi" )
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch( item.getItemId() )
@@ -261,29 +287,27 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 
 
+		/**
+		 * Devuelve el numero de elementos/menus del slider.
+		 */
 		@Override
 		public int getCount()
 		{
-			return 4;
+			return arrayTags.length;
 		}
 
 
 
+		/**
+		 * Devuelve el nombre del elemento del slider segun la posicion correspondiente..
+		 */
 		@Override
 		public CharSequence getPageTitle(int position)
 		{
-			switch( position )
-			{
-				case 0:
-					return getString(R.string.title_section1).toUpperCase();
-				case 1:
-					return getString(R.string.title_section2).toUpperCase();
-				case 2:
-					return getString(R.string.title_section3).toUpperCase();
-				case 3:
-					return getString(R.string.title_section4).toUpperCase();
-			}
-			return null;
+			if( arrayTags.length > 0 )
+				return arrayTags[position].getName();
+			else
+				return null;
 		}
 	}
 
@@ -302,14 +326,114 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 
 
+		/**
+		 * Devuelve el View que contiene la informacion de la pagina del slider que se esta viendo.
+		 */
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 		{
-			TextView textView = new TextView(getActivity());
-			textView.setGravity(Gravity.CENTER);
-			Bundle args = getArguments();
-			textView.setText(Integer.toString(args.getInt(ARG_SECTION_NUMBER)) + " la");
-			return textView;
+			arrayTasks = new TaskHelper(context).getArrayTasks(arrayTags[getArguments().getInt(ARG_SECTION_NUMBER) - 1].getID());
+
+			listTask = new ListView(context);
+			adapter = new TaskArrayAdapter(context, arrayTasks);
+
+
+			listTask.setTextFilterEnabled(true);
+			listTask.setOnItemClickListener(new OnItemClickListener()
+			{
+				public void onItemClick(final AdapterView< ? > parent, final View view, final int position, long id)
+				{
+					// Se recupera el task que lanzo el evento y su adapter:
+					final Task task = (Task)parent.getItemAtPosition(position);
+					final TaskArrayAdapter adapter = (TaskArrayAdapter)parent.getAdapter();
+
+					// Se instancia un PopupMenu para mostrar las opciones del tag:
+					PopupMenu popup = new PopupMenu(parent.getContext(), view);
+					MenuInflater inflater = popup.getMenuInflater();
+					inflater.inflate(R.menu.main_task_item_menu, popup.getMenu());
+
+					// Se crea el listener del PopupMenu para tratar los eventos de los subitems:
+					popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+					{
+						public boolean onMenuItemClick(MenuItem item)
+						{
+
+
+							// Se actualiza el nombre, o el color o se elimita el tag:
+							switch( item.getItemId() )
+							{
+								case R.id.main_task_item_menu_edit:
+
+									// Hay que recuperar la informacion de la tarea para mandarsela con un Intent a la activity de edicion:
+
+									Intent intent = new Intent(context, NewTask.class);
+
+
+									Bundle bundle = new Bundle();
+									bundle.putInt("id", task.getID());
+									bundle.putInt("idTag", task.getIdTag());
+									bundle.putString("date", task.getDate());
+									bundle.putString("title", task.getTitle());
+									bundle.putString("description", task.getDescription());
+									//bundle.putInt("position", position);
+
+
+									intent.putExtra("task", bundle);
+
+									startActivity(intent);
+									return true;
+
+
+								case R.id.main_task_item_menu_delete:
+									// Se crea un AlertDialog y se le asigna un titulo y un mensaje:
+									AlertDialog.Builder alert = new AlertDialog.Builder(context);
+									alert.setTitle(getString(R.string.main_task_item_menu_delete_alert));
+
+
+									// Se crean los listeners para los botones del AlertDialog:
+									alert.setNegativeButton(android.R.string.cancel, null);
+									alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+									{
+										public void onClick(DialogInterface dialog, int whichButton)
+										{
+											// Se elimina el tag de la BD:
+											SQLiteDatabase db = MySQLiteHelper.getInstance(context).getWritableDatabase();
+											db.execSQL("DELETE FROM task WHERE id = ?;", new Object[] { task.getID() });
+											db.close();
+
+											// Se recuperan todos los Tags de la BD:
+											//tags = new TagHelper(context).getArrayTags();//getTagsInDataBase();
+											arrayTasks = new TaskHelper(context).getArrayTasks(arrayTags[getArguments().getInt(ARG_SECTION_NUMBER) - 1].getID());
+
+											// Se actualiza el ListView con los cambios:
+											listTask = new ListView(context);
+											Main.adapter = new TaskArrayAdapter(context, arrayTasks);
+											listTask.setAdapter(adapter);
+
+											// Se actualiza el ListView con los cambios:
+											adapter.notifyDataSetChanged();
+										}
+									});
+									alert.show();
+									return true;
+
+								default:
+									return false;
+							}
+						}
+					});
+
+					// Se muestra el Menú por pantalla:
+					popup.show();
+
+
+					// //////////////////////////
+				}
+			});
+
+
+			listTask.setAdapter(adapter);
+			return listTask;
 		}
 	}
 
