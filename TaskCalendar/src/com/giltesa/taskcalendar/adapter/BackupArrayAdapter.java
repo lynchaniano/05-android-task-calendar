@@ -61,10 +61,8 @@ public class BackupArrayAdapter extends ArrayAdapter< Backup >
 			item = inflater.inflate(R.layout.settings_backup_listitem, null);
 
 			holder = new BackupViewHolder();
-			holder.path = (TextView)item.findViewById(R.id.backup_listitem_filePath);
 			holder.date = (TextView)item.findViewById(R.id.backup_listitem_date);
 			holder.length = (TextView)item.findViewById(R.id.backup_listitem_length);
-
 
 			item.setTag(holder);
 		}
@@ -73,10 +71,8 @@ public class BackupArrayAdapter extends ArrayAdapter< Backup >
 			holder = (BackupViewHolder)item.getTag();
 		}
 
-		holder.path.setText(arrayBackups[position].getFilePath());
 		holder.date.setText(arrayBackups[position].getDate());
 		holder.length.setText(arrayBackups[position].getLength());
-
 
 		return( item );
 	}
@@ -88,7 +84,6 @@ public class BackupArrayAdapter extends ArrayAdapter< Backup >
 	 */
 	private class BackupViewHolder
 	{
-		public TextView	path;
 		public TextView	date;
 		public TextView	length;
 	}

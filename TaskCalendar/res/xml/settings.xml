@@ -54,7 +54,7 @@
             android:icon="@drawable/ic_settings_exit"
             android:defaultValue="false" />
     </PreferenceCategory>
-    
+     
     
     <!-- PREFERENCIAS DE LOS CALENDARIOS -->
     <PreferenceCategory android:title="@string/main_menu_settings_calendar_category" >
@@ -89,11 +89,11 @@
 			    android:targetClass="com.giltesa.taskcalendar.activity.SettingsBackups" />
 		</PreferenceScreen>
 		
-        <!-- COPIA DE SEGURIDAD EN DROPBOX -->
+        <!-- COPIA DE SEGURIDAD EN LA NUBE -->
 		<PreferenceScreen 
 			android:title="@string/main_menu_settings_calendar_cloud_title" 
 		    android:summary="@string/main_menu_settings_calendar_cloud_summary"
-			android:icon="@drawable/ic_settings_dropbox" >
+			android:icon="@drawable/ic_settings_cloud" >
 			<intent 
 			    android:action="android.intent.action.MAIN" 
 			    android:targetPackage="com.giltesa.taskcalendar" 

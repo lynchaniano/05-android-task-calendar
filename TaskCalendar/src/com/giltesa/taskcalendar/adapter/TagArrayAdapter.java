@@ -38,11 +38,25 @@ public class TagArrayAdapter extends ArrayAdapter< Tag >
 
 	/**
 	 * @param context
-	 * @param tags
+	 * @param tasks
 	 */
 	public TagArrayAdapter(Activity context, Tag[] tags)
 	{
 		super(context, R.layout.settings_tags_listitem, tags);
+		this.context = context;
+		this.tags = tags;
+	}
+
+
+
+	/**
+	 * @param context
+	 * @param simpleSpinnerItem
+	 * @param tasks
+	 */
+	public TagArrayAdapter(Activity context, int simpleSpinnerItem, Tag[] tags)
+	{
+		super(context, simpleSpinnerItem, tags);
 		this.context = context;
 		this.tags = tags;
 	}

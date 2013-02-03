@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Author:		Alberto Gil Tesa
+	WebSite:	http://giltesa.com
+	License:	CC BY-NC-SA 3.0
+				http://goo.gl/CTYnN
+				
+	Project:	Task Calendar
+	Package:	com.giltesa.taskcalendar
+	File:		/TaskCalendar/res/menu/settings_cloud_actionbar.xml
+-->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/cloud_actionbar_update"
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_settings_cloud_update"
+        android:showAsAction="ifRoom"
+        android:title="@string/settings_cloud_actionbar_update"
+        android:visible="false" />
+    
+    <item
+        android:id="@+id/cloud_actionbar_login"
+        android:orderInCategory="2"
+        android:icon="@drawable/ic_settings_cloud_login"
+        android:showAsAction="ifRoom"
+        android:title="@string/settings_cloud_actionbar_login"
+        android:visible="true" />
+
+    <item
+        android:id="@+id/cloud_actionbar_logout"
+        android:orderInCategory="3"
+        android:icon="@drawable/ic_settings_cloud_logout"
+        android:showAsAction="ifRoom"
+        android:title="@string/settings_cloud_actionbar_logout" 
+        android:visible="false" />
+
+</menu>

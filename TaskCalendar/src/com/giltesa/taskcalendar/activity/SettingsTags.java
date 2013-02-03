@@ -32,12 +32,12 @@
 
 package com.giltesa.taskcalendar.activity;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -52,12 +52,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 
 import com.giltesa.taskcalendar.R;
 import com.giltesa.taskcalendar.adapter.TagArrayAdapter;
 import com.giltesa.taskcalendar.helper.MySQLiteHelper;
 import com.giltesa.taskcalendar.helper.PreferenceHelper;
+import com.giltesa.taskcalendar.helper.TagHelper;
 import com.giltesa.taskcalendar.util.ColorPickerDialog;
 import com.giltesa.taskcalendar.util.ColorPickerDialog.OnColorChangedListener;
 import com.giltesa.taskcalendar.util.Tag;
@@ -73,6 +73,7 @@ public class SettingsTags extends Activity
 	/**
 	 * Desde este onCreate se carga toda la interfaz, se recupera la información de la base de datos y se representa como una lista en pantalla.
 	 */
+	@SuppressLint( "NewApi" )
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -90,7 +91,7 @@ public class SettingsTags extends Activity
 
 
 		// Se recuperan todos los Tags de la BD:
-		tags = getTagsInDataBase();
+		tags = new TagHelper(this).getArrayTags();//getTagsInDataBase();
 
 
 		// Una vez con toda la información en el array se traspasa al ListView:
@@ -208,7 +209,7 @@ public class SettingsTags extends Activity
 										db.close();
 
 										// Se recuperan todos los Tags de la BD:
-										tags = getTagsInDataBase();
+										tags = new TagHelper(SettingsTags.this).getArrayTags();//getTagsInDataBase();
 
 										// Se actualiza el ListView con los cambios:
 										TagArrayAdapter adapter = new TagArrayAdapter(SettingsTags.this, tags);
@@ -240,6 +241,7 @@ public class SettingsTags extends Activity
 	 * 
 	 * @return
 	 */
+	/*
 	private Tag[] getTagsInDataBase()
 	{
 		Tag[] tags;
@@ -283,6 +285,7 @@ public class SettingsTags extends Activity
 
 		return tags;
 	}
+	*/
 
 
 
@@ -335,7 +338,7 @@ public class SettingsTags extends Activity
 						db.close();
 
 						// Se recuperan todos los Tags de la BD:
-						tags = getTagsInDataBase();
+						tags = new TagHelper(SettingsTags.this).getArrayTags();//getTagsInDataBase();
 
 						// Se actualiza el ListView con los cambios:
 						TagArrayAdapter adapter = new TagArrayAdapter(SettingsTags.this, tags);

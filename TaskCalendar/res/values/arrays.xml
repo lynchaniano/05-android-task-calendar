@@ -16,8 +16,10 @@
     <string-array name="main_menu_settings_app_sortTasksBy_listOptions">
     	<item>Oldest first</item>
         <item>Newest first</item>
+        <!--
         <item>With more tasks to finish first</item>
         <item>With fewer tasks to finish first</item>
+        -->
     </string-array>
 
     <!-- MAIN.MENU.SETTINGS.APP.THEME -->
@@ -25,12 +27,5 @@
         <item>Dark</item>
         <item>Light</item>
     </string-array>    
-
-
     
-
-
-
-
-        
 </resources>
