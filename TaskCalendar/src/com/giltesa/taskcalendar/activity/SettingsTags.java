@@ -195,7 +195,7 @@ public class SettingsTags extends Activity
 								// Se crea un AlertDialog y se le asigna un titulo y un mensaje:
 								alert = new AlertDialog.Builder(SettingsTags.this);
 								alert.setTitle(getString(R.string.settings_tags_popupmenu_delete_title));
-								alert.setMessage(getString(R.string.settings_tags_popupmenu_delete_message) + " " + tag.getName() + "?");
+								alert.setMessage(getString(R.string.settings_tags_popupmenu_delete_message1) + tag.getName() + getString(R.string.settings_tags_popupmenu_delete_message2));
 
 								// Se crean los listeners para los botones del AlertDialog:
 								alert.setNegativeButton(android.R.string.cancel, null);
@@ -203,13 +203,14 @@ public class SettingsTags extends Activity
 								{
 									public void onClick(DialogInterface dialog, int whichButton)
 									{
-										// Se elimina el tag de la BD:
+										// Al borrar la etiqueta tambien se borran sus tareas, no se dejan huerfanas en la base de datos:
 										SQLiteDatabase db = MySQLiteHelper.getInstance(SettingsTags.this).getWritableDatabase();
 										db.execSQL("DELETE FROM tags WHERE id = ?;", new Object[] { tag.getID() });
+										db.execSQL("DELETE FROM task WHERE tag_id = ?;", new Object[] { tag.getID() });
 										db.close();
 
 										// Se recuperan todos los Tags de la BD:
-										tags = new TagHelper(SettingsTags.this).getArrayTags();//getTagsInDataBase();
+										tags = new TagHelper(SettingsTags.this).getArrayTags();
 
 										// Se actualiza el ListView con los cambios:
 										TagArrayAdapter adapter = new TagArrayAdapter(SettingsTags.this, tags);
@@ -286,7 +287,6 @@ public class SettingsTags extends Activity
 		return tags;
 	}
 	*/
-
 
 
 	/**
@@ -368,5 +368,5 @@ public class SettingsTags extends Activity
 	{
 		return ( nameTag.toString().equals("") ) ? nameDefault : "" + nameTag;
 	}
-	
+
 }

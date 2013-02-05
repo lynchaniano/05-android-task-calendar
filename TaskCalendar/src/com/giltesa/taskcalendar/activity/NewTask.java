@@ -41,13 +41,10 @@ import com.giltesa.taskcalendar.util.Tag;
 
 public class NewTask extends Activity
 {
-	protected PreferenceHelper	prefs;
-
-	private EditText			title;
-	private EditText			description;
-	private Spinner				listTags;
-	private String				operation;
-	private Bundle				dataTask;
+	private EditText	title;
+	private EditText	description;
+	private Spinner		listTags;
+	private Bundle		dataTask;
 
 
 
@@ -55,8 +52,7 @@ public class NewTask extends Activity
 	@SuppressLint( "NewApi" )
 	public void onCreate(Bundle savedInstanceState)
 	{
-		prefs = new PreferenceHelper(this);
-		setTheme(prefs.getTheme());
+		setTheme(new PreferenceHelper(this).getTheme());
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.new_task);
@@ -75,29 +71,18 @@ public class NewTask extends Activity
 		TagArrayAdapter adapter = new TagArrayAdapter(this, R.layout.settings_tags_listitem_spinner, arrayTags);
 		listTags.setAdapter(adapter);
 
-		// Ahora se intenta recuperar la informacion que una activity anterior haya podido mandar, como cuando queremos editar la tarea en vez de crear una nueva:
-		dataTask = getIntent().getBundleExtra("task");
 
-		if( dataTask == null )
-		{
-			operation = "insert";
-		}
-		else
-		{
-			operation = "update";
+		// Al construirse el activity hay que preconfigurar el formulario segun si le hemos dado a "Nueva tarea" o a "Editar tarea".
+		dataTask = getIntent().getBundleExtra("dataTask");
 
-			// Se agrega la informacion actual de la tarea a los campos del formulario:
+		// En ambos casos se autoselecciona el item del Spinner para que coincida con la ultima pagina vista.
+		listTags.setSelection(dataTask.getInt("positionSpinner"));
+
+		// Ademas si le hemos dado a Editar Tarea se mostrara la informacion que ya contubiera la tarea
+		if( !dataTask.getBoolean("isNewTask") )
+		{
 			title.setText(dataTask.getString("title"));
 			description.setText(dataTask.getString("description"));
-
-
-			// Se obtiene el numero de indice del tag del Slinner recorriendolos y comparandolos con el idTag recibido.
-			int indice;
-			for( indice = 0 ; indice < arrayTags.length ; indice++ )
-				if( arrayTags[indice].getID() == dataTask.getInt("idTag") )
-					break;
-
-			listTags.setSelection(indice);
 		}
 
 	}
@@ -117,7 +102,6 @@ public class NewTask extends Activity
 	{
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.new_task_actionbar, menu);
-
 		return true;
 	}
 
@@ -127,58 +111,60 @@ public class NewTask extends Activity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		// Se prepara la informacion que se le enviara al Activity Main al finalizar el formulario:
 		Intent intent = new Intent(this, Main.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		Bundle dataMain = new Bundle();
+
 
 		switch( item.getItemId() )
 		{
 			case android.R.id.home:
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				dataMain.putInt("positionSpinner", dataTask.getInt("positionSpinner"));
+				intent.putExtra("dataMain", dataMain);
 				startActivity(intent);
 				break;
 
 			case R.id.main_newtask_actionbar_save:
-
-
-				if( title.getText().toString().equals("") )
+				// Como minimo se ha de haber introducido un titulo para la tarea:
+				if( title.getText().length() <= 0 )
 				{
 					Toast.makeText(this, getString(R.string.main_newtask_requeridFields), Toast.LENGTH_LONG).show();
 				}
 				else
 				{
 					SQLiteDatabase db = MySQLiteHelper.getInstance(NewTask.this).getWritableDatabase();
+					int idTag = ( (Tag)listTags.getSelectedItem() ).getID();
 
-					if( operation.equals("insert") )
+					if( dataTask.getBoolean("isNewTask") )
 					{
-						//Se prepara la fecha y el id del tag para la nueva tarea:
+						// Se prepara la fecha:
 						Date date = Calendar.getInstance().getTime();
 						String formattedDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(date);
-						int idTag = ( (Tag)listTags.getSelectedItem() ).getID();
 
 						// Se inserta la nueva tarea:
 						db.execSQL("INSERT INTO task VALUES ( NULL, ?, ?, ?, ?);", new Object[] { idTag, formattedDate, title.getText().toString(), description.getText().toString() });
 						Toast.makeText(this, getString(R.string.main_newtask_taskInserted), Toast.LENGTH_LONG).show();
 					}
-					else if( operation.equals("update") )
+					else
 					{
-						int idTag = ( (Tag)listTags.getSelectedItem() ).getID();
-
 						// Se actualiza la tarea con la nueva informacion
 						db.execSQL("UPDATE task SET title = ?, description = ?, tag_id = ? WHERE id = ?;", new Object[] { title.getText(), description.getText().toString(), idTag, dataTask.getInt("id") });
 						Toast.makeText(this, getString(R.string.main_newtask_taskUpdated), Toast.LENGTH_LONG).show();
 					}
-
 					db.close();
 
-					// Se cierra el activity y se regresa atras:
-					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					// Se carga el Activity principal:
+					dataMain.putInt("positionSpinner", listTags.getSelectedItemPosition());
+					intent.putExtra("dataMain", dataMain);
 					startActivity(intent);
 				}
-
 				return true;
 
 			default:
 				break;
 		}
+
 		return true;
 	}
 }
