@@ -23,7 +23,7 @@
     <!-- MAIN.TASK.ITEM -->
     <string name="main_task_item_menu_edit">Edit</string>
 	<string name="main_task_item_menu_delete">Delete</string>
-	<string name="main_task_item_menu_delete_alert">Delete Task?</string>
+	<string name="main_task_item_menu_delete_alert_title">Delete Task?</string>
     
     <!-- MAIN.ACTIONBAR -->
     <string name="main_actionbar_search">Search</string>
@@ -89,7 +89,8 @@
 		    	
 	    		<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.DELETE -->
 	    		<string name="settings_tags_popupmenu_delete_title">Remove the tag</string>
-	    		<string name="settings_tags_popupmenu_delete_message">Really want to delete the tag</string>	    	
+	    		<string name="settings_tags_popupmenu_delete_message1">If you remove the \"</string>
+	    		<string name="settings_tags_popupmenu_delete_message2">\" also erase their task!</string>	
 	
     			
     	<!-- MAIN.MENU.SETTINGS.CALENDAR.BACKUP -->
@@ -137,7 +138,7 @@
 	    <!-- MAIN.MENU.SETTINGS.ABOUT.ABOUT -->
 	    <string name="about_apptitle">Task Calendar for Android</string>
 	    <string name="about_version">Version</string>
-	    <string name="about_author">giltesa @ 2012</string>
+	    <string name="about_author">giltesa @ 2013</string>
 	    <string name="about_blog_url">http://giltesa.com</string>
 	    <string name="about_blog_url_title"><u>www.giltesa.com</u></string>
     
@@ -147,20 +148,4 @@
 		<string name="settings_license_actionbar_url_base">http://creativecommons.org/licenses/by-nc-sa/3.0/deed.</string>    
 
 		
-		
-
-    
-    
-    
-    
-    
-    
-
-    <!-- BORRAR: -->
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-    <string name="title_section4">Section 4</string>
-    <string name="hello_world">Hello world!</string>
-
 </resources>

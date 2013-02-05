@@ -31,7 +31,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -66,12 +68,12 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 	 * keep every loaded fragment in memory. If this becomes too memory intensive, it may be best
 	 * to switch to a {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	SectionsPagerAdapter		mSectionsPagerAdapter;
+	static SectionsPagerAdapter	mSectionsPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
-	ViewPager					mViewPager;
+	static ViewPager			mViewPager;
 
 
 	private SearchView			mSearchView;
@@ -105,6 +107,14 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 		context = this;
 		arrayTags = new TagHelper(context).getArrayTags();
+
+
+		// Se intenta recuperar la informacion que haya podido mandar la Activity NewTask:
+		Bundle dataMain = getIntent().getBundleExtra("dataMain");
+		if( dataMain != null )
+		{
+			mViewPager.setCurrentItem(dataMain.getInt("positionSpinner"));
+		}
 	}
 
 
@@ -218,7 +228,13 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 						switch( item.getItemId() )
 						{
 							case R.id.main_menu_newtask:
-								startActivity(new Intent(Main.this, NewTask.class));
+								// Se crea un Intent y un Bundle con la informacion a enviar al nuevo Activity:
+								Intent intent = new Intent(context, NewTask.class);
+								Bundle bundle = new Bundle();
+								bundle.putBoolean("isNewTask", true);
+								bundle.putInt("positionSpinner", mViewPager.getCurrentItem());
+								intent.putExtra("dataTask", bundle);
+								startActivity(intent);
 								return true;
 
 							case R.id.main_menu_settings:
@@ -237,13 +253,22 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 				popup.show();
 				return true;
 
+
 			case R.id.main_actionbar_search:
+				// Revisar: El buscador deberia de abrir un activity que mostrara cualquier tarea que contenga una o mas de las palabras usadas en la busqueda...
 				//Se pulsa el boton de busqueda
 				//Toast.makeText(this, "main_actionbar_search", Toast.LENGTH_SHORT).show();
 				return true;
 
+
 			case R.id.main_menu_newtask:
-				startActivity(new Intent(Main.this, NewTask.class));
+				// Se crea un Intent y un Bundle con la informacion a enviar al nuevo Activity:
+				Intent intent = new Intent(context, NewTask.class);
+				Bundle bundle = new Bundle();
+				bundle.putBoolean("isNewTask", true);
+				bundle.putInt("positionSpinner", mViewPager.getCurrentItem());
+				intent.putExtra("dataTask", bundle);
+				startActivity(intent);
 				return true;
 
 			case R.id.main_menu_settings:
@@ -305,7 +330,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 		public CharSequence getPageTitle(int position)
 		{
 			if( arrayTags.length > 0 )
-				return arrayTags[position].getName();
+				return arrayTags[position].getName() +" " + arrayTags[position].getID();
 			else
 				return null;
 		}
@@ -343,75 +368,89 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 			{
 				public void onItemClick(final AdapterView< ? > parent, final View view, final int position, long id)
 				{
-					// Se recupera el task que lanzo el evento y su adapter:
+					// Se recupera la tarea que ha lanzado el evento. Tambien su adapter:
 					final Task task = (Task)parent.getItemAtPosition(position);
 					final TaskArrayAdapter adapter = (TaskArrayAdapter)parent.getAdapter();
 
-					// Se instancia un PopupMenu para mostrar las opciones del tag:
+					// Se instancia un menu PopupMenu para mostrar las opciones del Item:
 					PopupMenu popup = new PopupMenu(parent.getContext(), view);
 					MenuInflater inflater = popup.getMenuInflater();
 					inflater.inflate(R.menu.main_task_item_menu, popup.getMenu());
 
-					// Se crea el listener del PopupMenu para tratar los eventos de los subitems:
+					// Se crea el listener del popupMenu para tratar los eventos de cada subitem:
 					popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
 					{
 						public boolean onMenuItemClick(MenuItem item)
 						{
-
-
-							// Se actualiza el nombre, o el color o se elimita el tag:
+							// Se trata los eventos de los Items de edicion y eliminacion de tareas:
 							switch( item.getItemId() )
 							{
 								case R.id.main_task_item_menu_edit:
-
-									// Hay que recuperar la informacion de la tarea para mandarsela con un Intent a la activity de edicion:
-
+									// Se prepara un Intent con toda la informacion necesaria para el Activity de Editar tarea: 
 									Intent intent = new Intent(context, NewTask.class);
 
-
+									// Se preparan los parametros a pasar dentro de un Bundle:
 									Bundle bundle = new Bundle();
+									bundle.putBoolean("isNewTask", false);
+									bundle.putInt("positionSpinner", mViewPager.getCurrentItem());
 									bundle.putInt("id", task.getID());
 									bundle.putInt("idTag", task.getIdTag());
-									bundle.putString("date", task.getDate());
 									bundle.putString("title", task.getTitle());
 									bundle.putString("description", task.getDescription());
-									//bundle.putInt("position", position);
 
-
-									intent.putExtra("task", bundle);
-
+									// Y por ultimo se adjunta el Bundle con los parametros al Intent y se envia al nuevo Activity:
+									intent.putExtra("dataTask", bundle);
 									startActivity(intent);
 									return true;
 
 
 								case R.id.main_task_item_menu_delete:
-									// Se crea un AlertDialog y se le asigna un titulo y un mensaje:
+									// Se crea un AlertDialog de advertencia para la eliminacion de la tarea:
 									AlertDialog.Builder alert = new AlertDialog.Builder(context);
-									alert.setTitle(getString(R.string.main_task_item_menu_delete_alert));
+									alert.setTitle(getString(R.string.main_task_item_menu_delete_alert_title));
 
-
-									// Se crean los listeners para los botones del AlertDialog:
+									// Se crea el listener para tratar los eventos de los botones del AlertDialog:
 									alert.setNegativeButton(android.R.string.cancel, null);
 									alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
 									{
 										public void onClick(DialogInterface dialog, int whichButton)
 										{
-											// Se elimina el tag de la BD:
+											// Se elimina la tarea de la base de datos:
 											SQLiteDatabase db = MySQLiteHelper.getInstance(context).getWritableDatabase();
 											db.execSQL("DELETE FROM task WHERE id = ?;", new Object[] { task.getID() });
 											db.close();
 
-											// Se recuperan todos los Tags de la BD:
-											//tags = new TagHelper(context).getArrayTags();//getTagsInDataBase();
-											arrayTasks = new TaskHelper(context).getArrayTasks(arrayTags[getArguments().getInt(ARG_SECTION_NUMBER) - 1].getID());
 
-											// Se actualiza el ListView con los cambios:
-											listTask = new ListView(context);
-											Main.adapter = new TaskArrayAdapter(context, arrayTasks);
+											// Revisar:
+											/*
+											:: Esta parte sigue funcionando mal, si antes de eliminar las tareas te desplazas
+											:: por las diferentes pantallas del slider entonces si se muestran las eliminaciones correctamente
+											:: sin embargo si no las visualizas, entonces al eliminar la tarea no se refresca y cuando te desplazas
+											:: entre columnas aparecen las mismas tareas de la columna anterior en otras columnas
+											:: digamos que se "trafuca" el slider... hay que arreglar eso...
+											*/
+
+											// Se recuperan las tareas de la columna a actualizar y se cargan de nuevo en la lista de tareas:
+
+
+											//Log.e("DELETE", "mViewPager.getCurrentItem()= " + mViewPager.getCurrentItem());
+
+
+											Log.e("DELETE", "1= " + arrayTags[getArguments().getInt(ARG_SECTION_NUMBER) - 1].getID());
+											Log.e("DELETE", "2= " + arrayTags[mViewPager.getCurrentItem()].getID());
+
+
+											//arrayTasks = new TaskHelper(context).getArrayTasks(arrayTags[getArguments().getInt(ARG_SECTION_NUMBER) - 1].getID());
+											
+											
+											arrayTasks = new TaskHelper(context).getArrayTasks(arrayTags[mViewPager.getCurrentItem()].getID());
+											//TaskArrayAdapter adapter = new TaskArrayAdapter(context, arrayTasks);
 											listTask.setAdapter(adapter);
-
-											// Se actualiza el ListView con los cambios:
+											
+											
+											mSectionsPagerAdapter.notifyDataSetChanged();
 											adapter.notifyDataSetChanged();
+
 										}
 									});
 									alert.show();
@@ -425,9 +464,6 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 					// Se muestra el Menú por pantalla:
 					popup.show();
-
-
-					// //////////////////////////
 				}
 			});
 
