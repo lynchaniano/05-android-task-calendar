@@ -9,12 +9,16 @@
     File:       /TaskCalendar/src/com/giltesa/taskcalendar/activity/SettingsAbout.java
 */
 
+
 package com.giltesa.taskcalendar.activity;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +35,11 @@ public class SettingsAbout extends Activity implements OnClickListener
 
 
 
+	/**
+	 * 
+	 */
+	@TargetApi( Build.VERSION_CODES.HONEYCOMB )
+	@SuppressLint( "NewApi" )
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -50,6 +59,9 @@ public class SettingsAbout extends Activity implements OnClickListener
 
 
 
+	/**
+	 * 
+	 */
 	public void onClick(View view)
 	{
 		if( view.getId() == R.id.settings_about_url )
@@ -58,15 +70,16 @@ public class SettingsAbout extends Activity implements OnClickListener
 
 
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch( item.getItemId() )
 		{
 			case android.R.id.home:
-				Intent intent = new Intent(this, Settings.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
+				finish();
 				break;
 
 			default:

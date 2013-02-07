@@ -125,7 +125,7 @@ public class BackupHelper
 	 * @param output
 	 *            File de destino, apunta a un fichero, que no debería de existir, donde se desea realizar la copia.
 	 * @return
-	 *         Devuleve true si se realizo la copia correctamente, false en caso contrario.
+	 *         Devuelve true si se realizo la copia correctamente, false en caso contrario.
 	 */
 	@SuppressWarnings( "resource" )
 	private Boolean copyFile(File input, File output)

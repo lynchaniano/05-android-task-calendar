@@ -9,6 +9,7 @@
     File:       /TaskCalendar/src/com/giltesa/taskcalendar/helper/PreferenceHelper.java
 */
 
+
 package com.giltesa.taskcalendar.helper;
 
 import android.app.Activity;
@@ -28,13 +29,13 @@ public final class PreferenceHelper
 	private static final String	PREF_THEME	= "main_menu_settings_app_theme_key";
 	private static final String	PREF_EXIT	= "main_menu_settings_app_confirmExit_key";
 	private static final String	PREF_DIR	= "main_menu_settings_calendar_directoryStorage_key";
-
-
-
 	//private static final String	PREF_ABOUT	= "main_menu_settings_about_about_key";
 	//private static final String	PREF_SHARE	= "main_menu_settings_about_share_key";
 
 
+	/**
+	 * @param context
+	 */
 	public PreferenceHelper(Activity context)
 	{
 		this.context = context;
@@ -42,6 +43,9 @@ public final class PreferenceHelper
 
 
 
+	/**
+	 * @return
+	 */
 	public String getSortTask()
 	{
 		String order = PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_SORT, "");
@@ -51,15 +55,18 @@ public final class PreferenceHelper
 
 
 		if( order.equals(listOrders[0]) ) // Oldest first
-			result += "creation_date ASC";
+			result += "ORDER BY creation_date ASC";
 		else if( order.equals(listOrders[1]) ) // Newest first
-			result += "creation_date DESC";
+			result += "ORDER BY creation_date DESC";
 
 		return result;
 	}
 
 
 
+	/**
+	 * @return
+	 */
 	public int getTheme()
 	{
 		String[] listThemes = context.getResources().getStringArray(R.array.main_menu_settings_app_theme_listOptions);
@@ -73,6 +80,9 @@ public final class PreferenceHelper
 
 
 
+	/**
+	 * @return
+	 */
 	public boolean isConfirmExit()
 	{
 		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PREF_EXIT, false);
@@ -80,6 +90,9 @@ public final class PreferenceHelper
 
 
 
+	/**
+	 * @return
+	 */
 	public String getDirectory()
 	{
 		return PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_DIR, context.getResources().getString(R.string.main_menu_settings_calendar_directoryStorage_defaultValue));
@@ -87,6 +100,9 @@ public final class PreferenceHelper
 
 
 
+	/**
+	 * @return
+	 */
 	public String getVersionName()
 	{
 		PackageManager pm = context.getPackageManager();
@@ -101,36 +117,4 @@ public final class PreferenceHelper
 		}
 	}
 
-
 }
-
-
-//MODO DE ORDENAR LAS TAREAS
-//"main_menu_settings_app_sortTasksBy_key"
-
-//APARIENCIA VISUAL
-//"main_menu_settings_app_theme_key"
-
-//CONFIRMACION AL SALIR
-//"main_menu_settings_app_confirmExit_key"
-
-//GESTIONAR ETIQUETAS
-
-//DIRECTORIO DE ADJUNTOS
-//"main_menu_settings_calendar_directoryStorage_key"
-
-//COPIA DE SEGURIDAD LOCAL
-
-//COPIA DE SEGURIDAD EN DROPBOX
-
-//ACERCA DE
-//"main_menu_settings_about_about_key"
-
-//COMPARTIR APLICACION
-//"main_menu_settings_about_share_key"
-
-//PUNTUAR EN EL MARKET
-
-//INFORMAR SOBRE UN ERROR
-
-// LICENCIA DE SOFTWARE

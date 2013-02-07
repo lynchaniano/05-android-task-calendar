@@ -17,19 +17,14 @@
 package com.giltesa.taskcalendar.adapter;
 
 import android.app.Activity;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
 import com.giltesa.taskcalendar.R;
-import com.giltesa.taskcalendar.activity.SettingsTags;
-import com.giltesa.taskcalendar.helper.MySQLiteHelper;
 import com.giltesa.taskcalendar.util.Task;
 
 
@@ -102,13 +97,6 @@ public class TaskArrayAdapter extends ArrayAdapter< Task >
 		holder.title.setText(tasks[position].getTitle());
 		holder.description.setText(tasks[position].getDescription());
 		holder.color.setBackgroundColor(Color.parseColor(tasks[position].getColor()));
-
-		// Se obtiene el color que corresponde a la etiqueta:
-		//SQLiteDatabase db = MySQLiteHelper.getInstance(context).getWritableDatabase();
-		//Cursor cursorTags = db.rawQuery("SELECT color FROM tags WHERE id = " + tasks[position].getId(), null);
-		//cursorTags.moveToFirst();
-		//holder.color.setBackgroundColor(Color.parseColor(cursorTags.getString(0)));
-		//db.close();
 
 		return( item );
 	}

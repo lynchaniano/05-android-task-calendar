@@ -1,0 +1,153 @@
+<!--
+	Author:		Alberto Gil Tesa
+	WebSite:	http://giltesa.com
+	License:	CC BY-NC-SA 3.0
+				http://goo.gl/CTYnN
+				
+	Project:	Task Calendar
+	Package:	com.giltesa.taskcalendar
+	File:		/TaskCalendar/res/values/strings.xml (Spanishandroid-developer@giltesa.com)
+-->
+<resources>
+
+    <!-- APP -->
+    <string name="app_name">"Calendario de Tareas"</string>
+    <string name="main_title">"Calendario de tareas"</string>
+    
+    <!-- MAIN -->
+    <string name="main_exit_title">"Salir"</string>
+    <string name="main_exit_summary">"¿Seguro que quiere salir?"</string>
+    
+    <!-- MAIN.TASK.ITEM -->
+    <string name="main_task_item_menu_edit">"Editar"</string>
+	<string name="main_task_item_menu_delete">"Eliminar"</string>
+	<string name="main_task_item_menu_delete_alert_title">"¿Eliminar tarea?"</string>
+    
+    <!-- MAIN.ACTIONBAR -->
+    <string name="main_actionbar_search">"Buscar"</string>
+    <string name="main_actionbar_menu">"Menú"</string>
+
+    <!-- MAIN.MENU -->
+    <string name="main_menu_newtask">"Nueva tarea"</string>
+    <string name="main_menu_settings">"Ajustes"</string>
+    <string name="main_menu_exit">"Salir"</string>
+    
+    <!-- MAIN.NEWTASK -->
+    <string name="main_newtask_title">"Título"</string>
+    <string name="main_newtask_description">"Descripción"</string>
+    <string name="main_newtask_tag">"Etiqueta"</string>
+    <string name="main_newtask_requeridFields">"¡El título es necesario!"</string>
+    <string name="main_newtask_taskInserted">"Nueva tarea insertada"</string>
+    <string name="main_newtask_taskUpdated">"La tarea se ha actualizado"</string>     
+    
+    <!-- MAIN.NEWTASK.ACTIONBAR -->
+    <string name="main_newtask_actionbar_save">"Guardar"</string>
+
+    <!-- MAIN.SEARCHRESULT -->
+    <string name="main_search">"Resultados de la búsqueda"</string>
+    <string name="main_search_results_list_empty">"No se encontró nada acorde con su búsqueda"</string>
+  
+    <!-- MAIN.MENU.SETTINGS.APP -->
+    <string name="main_menu_settings_app_category">"Preferencias de la aplicación"</string>
+    <string name="main_menu_settings_app_sortTasksBy_title">"Ordenar las tareas por"</string>
+    <string name="main_menu_settings_app_sortTasksBy_summary">"Ordenar las tareas de diferentes maneras"</string>
+	<string name="main_menu_settings_app_theme_title">"Elegir el tema"</string>
+	<string name="main_menu_settings_app_theme_summary">"Seleccione el aspecto visual para la aplicación"</string>
+    <string name="main_menu_settings_app_confirmExit_title">"Confirmar al salir"</string>
+    <string name="main_menu_settings_app_confirmExit_summary">"Pedir confirmación antes de salir"</string>
+   
+    <!-- MAIN.MENU.SETTINGS.CALENDAR -->
+    <string name="main_menu_settings_calendar_category">"Preferencias del calendario"</string>
+    <string name="main_menu_settings_calendar_manageTags_title">"Administrar etiquetas"</string>
+    <string name="main_menu_settings_calendar_manageTags_summary">"Agregue, edite o elimine las etiquetas"</string> 
+    <string name="main_menu_settings_calendar_directoryStorage_title">"Directorio de almacenamiento"</string>
+    <string name="main_menu_settings_calendar_directoryStorage_summary">"El directorio para guardar los archivos y copias de seguridad"</string>
+    <string name="main_menu_settings_calendar_directoryStorage_defaultValue">"/sdcard/TaskCalendar"</string>
+    <string name="main_menu_settings_calendar_manageBackup_title">"Administrar Backup"</string>
+    <string name="main_menu_settings_calendar_manageBackup_summary">"Salvaguardar los datos en la memoria SD"</string>
+    <string name="main_menu_settings_calendar_cloud_title">"Backups en la Nube"</string>
+    <string name="main_menu_settings_calendar_cloud_summary">"Almacene sus copias de seguridad en Dropbox"</string>    
+
+    
+    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG -->
+    	<string name="settings_tags_task">"tarea"</string>
+    	<string name="settings_tags_itemList_empty">"Agregar una etiqueta con el botón superior"</string>
+    
+	    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.ACTIONBAR -->
+	    	<string name="settings_tags_actionbar_add">"Añadir etiqueta"</string>
+	    	
+	    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU -->
+	    	<string name="settings_tags_popupmenu_name">"Modificar nombre"</string>
+	    	<string name="settings_tags_popupmenu_color">"Editar color"</string>
+	    	<string name="settings_tags_popupmenu_delete">"Eliminar etiqueta"</string>
+	    	
+	    		<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.NAME -->
+	    		<string name="settings_tags_popupmenu_name_title">"Introduzca el nombre de la etiqueta"</string>
+	    		<string name="settings_tags_popupmenu_name_message">"El nombre actual:"</string>
+	    		<string name="settings_tags_popupmenu_name_defaultName">"Nueva etiqueta"</string>
+	    	
+		    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.COLOR -->
+		    	<string name="settings_tags_popupmenu_color_title">"Elige un color"</string>
+		    	
+	    		<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.POPUPMENU.DELETE -->
+	    		<string name="settings_tags_popupmenu_delete_title">"Eliminar la etiqueta"</string>
+	    		<string name="settings_tags_popupmenu_delete_message1">"Si elimina \""</string>
+	    		<string name="settings_tags_popupmenu_delete_message2">"\" también se borraran sus tareas!"</string>	
+	
+    			
+    	<!-- MAIN.MENU.SETTINGS.CALENDAR.BACKUP -->
+    	<string name="settings_backup_itemList_empty">"Cree una copia de seguridad utilizando el botón superior"</string>
+    	<string name="settings_backup_errorPath">"El directorio de almacenamiento no existe. Es necesario que lo configure correctamente"</string>
+    	<string name="settings_backup_correctCopy">"Copia correcta"</string>
+    	<string name="settings_backup_incorrectCopy">"Copia incorrecta"</string>
+    	
+    		<!-- MAIN.MENU.SETTINGS.CALENDAR.BACKUP.ACTIONBAR -->
+    		<string name="settings_backup_actionbar_new">"¿Crear una nueva copia de seguridad?"</string>
+    	    
+	    	<!-- MAIN.MENU.SETTINGS.CALENDAR.BACKUP.POPUPMENU -->
+	    	<string name="settings_backup_popupmenu_restore">"Restaurar copia de seguridad"</string>
+	    	<string name="settings_backup_popupmenu_delete">"Borrar copia de seguridad"</string>   
+	    	
+	    		<!-- MAIN.MENU.SETTINGS.CALENDAR.BACKUP.POPUPMENU.DELETE -->
+	    		<string name="settings_backup_popupmenu_restore_title">"Restaurar la copia de seguridad"</string>
+	    		<string name="settings_backup_popupmenu_restore_message">"¿Realmente desea restaurar la copia de seguridad?"</string>
+	    		<string name="settings_backup_popupmenu_delete_title">"Eliminar la copia de seguridad"</string>
+	    		<string name="settings_backup_popupmenu_delete_message">"¿Realmente desea eliminar la copia de seguridad?"</string>	    				    			
+    
+    	
+    	<!-- MAIN.MENU.SETTINGS.CALENDAR.CLOUD -->    
+    	<string name="settings_cloud_itemList_empty">"Cree una copia de seguridad utilizando el botón superior"</string>
+
+	    	<!-- MAIN.MENU.SETTINGS.CALENDAR.CLOUD.ACTIONBAR -->  
+			<string name="settings_cloud_actionbar_update">"Actualizar cambios"</string>
+			<string name="settings_cloud_actionbar_login">"Iniciar sesión en Dropbox"</string>   
+			<string name="settings_cloud_actionbar_logout">"Cerrar sesión de Dropbox"</string>   
+       	
+    
+    <!-- MAIN.MENU.SETTINGS.ABOUT -->
+    <string name="main_menu_settings_about_category">"Sobre la aplicación"</string>
+    <string name="main_menu_settings_about_about_title">"Acerca de"</string>
+    <string name="main_menu_settings_about_share_title">"Compartir aplicación"</string>
+    <string name="main_menu_settings_about_share_summary">"Comparta la aplicación con sus amigos"</string>
+	 <string name="main_menu_settings_about_share_text">"He estado usando TaskCalendar y pensé que te puede gustar también. Aquí está el enlace de descarga: https://play.google.com/store/apps/details?id=com.giltesa.taskcalendar"</string>    
+    <string name="main_menu_settings_about_rate_title">"Puntuar Calendario de Tareas"</string>
+    <string name="main_menu_settings_about_rate_summary">"Puntué y dejar un comentario en la tienda de Google Play"</string>    
+    <string name="main_menu_settings_about_errorReport_title">"Notificar un error"</string>
+    <string name="main_menu_settings_about_errorReport_summary">"Informe de un error o mejora"</string>
+    <string name="main_menu_settings_about_errorReport_text">&quot;mailto:android-developer@giltesa.com?subject=[TaskCalendar]+Informe+de+un+error+o+mejora&quot;</string>    
+    <string name="main_menu_settings_about_softwareLicense_title">"Términos de la licencia"</string>
+
+	    <!-- MAIN.MENU.SETTINGS.ABOUT.ABOUT -->
+	    <string name="about_apptitle">"Calendario de Tareas para Android"</string>
+	    <string name="about_version">"Versión"</string>
+	    <string name="about_author">"giltesa @ 2013"</string>
+	    <string name="about_blog_url">"http://giltesa.com"</string>
+	    <string name="about_blog_url_title">"&lt;u&gt;www.giltesa.com&lt;/u&gt;"</string>
+    
+    
+    	<!-- MAIN.MENU.SETTINGS.ABOUT.LICENSE -->
+    	<string name="settings_license_actionbar_web">"Visite el resumen de licencia en el sitio web"</string>
+		<string name="settings_license_actionbar_url_base">"http://creativecommons.org/licenses/by-nc-sa/3.0/deed."</string>    
+
+		
+</resources>

@@ -136,7 +136,7 @@
     <string name="main_menu_settings_about_rate_summary">Rate and write a review on the Google Play Store</string>    
     <string name="main_menu_settings_about_errorReport_title">Error report</string>
     <string name="main_menu_settings_about_errorReport_summary">Report an error or improvement</string>
-    <string name="main_menu_settings_about_errorReport_text">mailto:giltesa@giltesa.com?subject=Report+an+error+or+improvement</string>    
+    <string name="main_menu_settings_about_errorReport_text">mailto:android-developer@giltesa.com?subject=[TaskCalendar]+Report+an+error+or+improvement</string>    
     <string name="main_menu_settings_about_softwareLicense_title">Software License</string>
 
 	    <!-- MAIN.MENU.SETTINGS.ABOUT.ABOUT -->

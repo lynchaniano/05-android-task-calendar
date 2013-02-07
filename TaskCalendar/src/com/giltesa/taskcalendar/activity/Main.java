@@ -15,6 +15,9 @@
 			
 		PopPup Menu:
 			http://developer.android.com/guide/topics/ui/menus.html#PopupMenu
+			
+		Paso de parametros entre Activities:
+			http://stackoverflow.com/questions/12233106/really-not-getting-setresult-and-onactivityresult
 */
 
 
@@ -58,29 +61,16 @@ import com.giltesa.taskcalendar.util.Task;
 @SuppressLint( "NewApi" )
 public class Main extends FragmentActivity implements SearchView.OnQueryTextListener
 {
+	private static SectionsPagerAdapter	mSectionsPagerAdapter;
+	private static ViewPager			mViewPager;
+	private SearchView					mSearchView;
 
-	/**
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the
-	 * sections. We use a {@link android.support.v4.app.FragmentPagerAdapter} derivative, which will
-	 * keep every loaded fragment in memory. If this becomes too memory intensive, it may be best
-	 * to switch to a {@link android.support.v4.app.FragmentStatePagerAdapter}.
-	 */
-	static SectionsPagerAdapter	mSectionsPagerAdapter;
-
-	/**
-	 * The {@link ViewPager} that will host the section contents.
-	 */
-	static ViewPager			mViewPager;
-
-
-	private SearchView			mSearchView;
-
-	protected PreferenceHelper	prefs;
-	private static Activity		context;
-	static Tag[]				arrayTags;
-	static Task[]				arrayTasks;
-	static ListView				listTask;
-	static TaskArrayAdapter		adapter;
+	protected PreferenceHelper			prefs;
+	private static Activity				context;
+	static Tag[]						arrayTags;
+	static Task[]						arrayTasks;
+	static ListView						listTask;
+	static TaskArrayAdapter				adapter;
 
 
 
@@ -92,9 +82,11 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 	{
 		prefs = new PreferenceHelper(this);
 		setTheme(prefs.getTheme());
+		context = this;
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
 		// Create the adapter that will return a fragment for each of the three primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -102,16 +94,44 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 		mViewPager = (ViewPager)findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
-		context = this;
 		arrayTags = new TagHelper(context).getArrayTags();
+	}
 
 
-		// Se intenta recuperar la informacion que haya podido mandar la Activity NewTask:
-		Bundle dataMain = getIntent().getBundleExtra("dataMain");
-		if( dataMain != null )
-		{
-			mViewPager.setCurrentItem(dataMain.getInt("positionSpinner"));
-		}
+
+	/**
+	 * 
+	 */
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+	}
+
+
+
+	/**
+	 * 
+	 */
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+	}
+
+
+
+	/**
+	 * Se tratan los posibles Intents recibidos de otros activities:
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+
+		// Si el result es del activity NewTask:
+		if( requestCode == 1 && resultCode == 11 )
+			mViewPager.setCurrentItem(data.getBundleExtra("dataActivity").getInt("positionTag"));
 	}
 
 
@@ -135,7 +155,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 			{
 				public void onClick(DialogInterface dialog, int which)
 				{
-					Main.this.finish();
+					finish();
 				}
 			});
 			alert.show();
@@ -152,37 +172,15 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 	 * 
 	 */
 	@Override
-	protected void onResume()
-	{
-		super.onResume();
-	}
-
-
-
-	/*
-	private void restartApp()
-	{
-		Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
-		i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		//i.putExtra(FileExplorerApp.EXTRA_FOLDER, currentDir.getAbsolutePath());
-		startActivity(i);
-	}
-	*/
-
-
-	@Override
 	public void onWindowFocusChanged(boolean hasFocus)
 	{
 		super.onWindowFocusChanged(hasFocus);
-		/*ActionBar actionBar = getActionBar();
-		if( hasFocus ) actionBar.hide();
-		else actionBar.show();*/
 	}
 
 
 
 	/**
-	 * 
+	 * Se carga el ActionBar y se recupera el Campo de Busqueda.
 	 */
 	@SuppressLint( "NewApi" )
 	@Override
@@ -191,7 +189,6 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_menu, menu);
 		inflater.inflate(R.menu.main_actionbar, menu);
-
 
 		//Cuadro de busqueda
 		MenuItem searchItem = menu.findItem(R.id.main_actionbar_search);
@@ -205,7 +202,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 	/**
 	 * Desde el metodo onOptionsItemSelected(), se tratan los eventos que produzcan los diferentes Items de los Menus.
-	 * Se tratan tanto los eventos del menu del boton fisico como los producidos por el boton del ActionBar
+	 * Se tratan tanto los eventos del menu del boton fisico como los producidos por el boton del ActionBar.
 	 */
 	@SuppressLint( "NewApi" )
 	public boolean onOptionsItemSelected(MenuItem item)
@@ -229,13 +226,13 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 								Intent intent = new Intent(context, NewTask.class);
 								Bundle bundle = new Bundle();
 								bundle.putBoolean("isNewTask", true);
-								bundle.putInt("positionSpinner", mViewPager.getCurrentItem());
-								intent.putExtra("dataTask", bundle);
-								startActivity(intent);
+								bundle.putInt("positionTag", mViewPager.getCurrentItem());
+								intent.putExtra("dataActivity", bundle);
+								startActivityForResult(intent, 1);
 								return true;
 
 							case R.id.main_menu_settings:
-								startActivity(new Intent(Main.this, Settings.class));
+								startActivity(new Intent(Main.this, Settings.class)); 
 								return true;
 
 							case R.id.main_menu_exit:
@@ -260,9 +257,9 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 				Intent intent = new Intent(context, NewTask.class);
 				Bundle bundle = new Bundle();
 				bundle.putBoolean("isNewTask", true);
-				bundle.putInt("positionSpinner", mViewPager.getCurrentItem());
-				intent.putExtra("dataTask", bundle);
-				startActivity(intent);
+				bundle.putInt("positionTag", mViewPager.getCurrentItem());
+				intent.putExtra("dataActivity", bundle);
+				startActivityForResult(intent, 1);
 				return true;
 
 			case R.id.main_menu_settings:
@@ -294,6 +291,9 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 
 
+		/**
+		 * 
+		 */
 		@Override
 		public Fragment getItem(int i)
 		{
@@ -318,7 +318,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 
 		/**
-		 * Devuelve el nombre del elemento del slider segun la posicion correspondiente..
+		 * Devuelve el nombre del elemento del slider segun la posicion correspondiente.
 		 */
 		@Override
 		public CharSequence getPageTitle(int position)
@@ -354,10 +354,6 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 			arrayTasks = new TaskHelper(context).getArrayTasks(arrayTags[getArguments().getInt(ARG_SECTION_NUMBER) - 1].getID());
 
 			listTask = new ListView(context);
-			adapter = new TaskArrayAdapter(context, arrayTasks);
-
-
-			listTask.setTextFilterEnabled(true);
 			listTask.setOnItemClickListener(new OnItemClickListener()
 			{
 				public void onItemClick(final AdapterView< ? > parent, final View view, final int position, long id)
@@ -386,15 +382,15 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 									// Se preparan los parametros a pasar dentro de un Bundle:
 									Bundle bundle = new Bundle();
 									bundle.putBoolean("isNewTask", false);
-									bundle.putInt("positionSpinner", mViewPager.getCurrentItem());
+									bundle.putInt("positionTag", mViewPager.getCurrentItem());
 									bundle.putInt("id", task.getID());
 									bundle.putInt("idTag", task.getIdTag());
 									bundle.putString("title", task.getTitle());
 									bundle.putString("description", task.getDescription());
 
 									// Y por ultimo se adjunta el Bundle con los parametros al Intent y se envia al nuevo Activity:
-									intent.putExtra("dataTask", bundle);
-									startActivity(intent);
+									intent.putExtra("dataActivity", bundle);
+									startActivityForResult(intent, 1);
 									return true;
 
 
@@ -414,7 +410,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 											db.execSQL("DELETE FROM task WHERE id = ?;", new Object[] { task.getID() });
 											db.close();
 
-											// :: Falta implementar el refresco del listview tras borrar la tarea de la BD. No ha habido forma de conseguirlo...
+											// :: Falta implementar el refresco del listTask tras borrar la tarea de la BD. No ha habido forma de conseguirlo...
 										}
 									});
 									alert.show();
@@ -432,6 +428,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 			});
 
 
+			adapter = new TaskArrayAdapter(context, arrayTasks);
 			listTask.setAdapter(adapter);
 			return listTask;
 		}
@@ -451,7 +448,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 
 	/**
-	 * Obtiene el texto del cuadro de busqueda en TIEMPO REAL
+	 * Este metodo permite obtener el texto del campo de busqueda en tiempo real (caracter a caracter)
 	 */
 	public boolean onQueryTextChange(String newText)
 	{

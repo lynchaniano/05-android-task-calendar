@@ -53,14 +53,8 @@ public class TagHelper
 
 
 		// Si no hay etiquetas, se muestra un mensaje para invitar al usuario a que las cree. Si las hay, se carga la información.
-		if( tags.length == 0 )
+		if( tags.length > 0 )
 		{
-			//( (TextView)context.findViewById(R.id.tags_list_empty) ).setVisibility(TextView.VISIBLE);
-		}
-		else
-		{
-			//( (TextView)context.findViewById(R.id.tags_list_empty) ).setVisibility(TextView.GONE);
-
 			// Se recupera toda la información de las etiquetas y se guarda en cada componente del array:
 			cursorTags = db.rawQuery("SELECT id , name , color FROM tags", null);
 			if( cursorTags.moveToFirst() )

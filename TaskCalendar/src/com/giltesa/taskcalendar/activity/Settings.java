@@ -13,23 +13,22 @@
 	PreferenceFragment
 		http://developer.android.com/reference/android/preference/PreferenceFragment.html
 		http://www.java2s.com/Code/Android/Core-Class/DemonstrationofPreferenceFragmentshowingasinglefragmentinanactivity.htm
-		
-		
-		getResources().getStringArray(R.array.main_menu_settings_app_sortTasksBy_listOptions);
-		
+	
 */
 
 
 package com.giltesa.taskcalendar.activity;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,6 +43,8 @@ public class Settings extends PreferenceActivity
 
 
 
+	@TargetApi( Build.VERSION_CODES.HONEYCOMB )
+	@SuppressLint( "NewApi" )
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -81,9 +82,14 @@ public class Settings extends PreferenceActivity
 
 
 
+	/**
+	 * 
+	 */
+	@SuppressLint( "NewApi" )
 	public static class PrefsFragment extends PreferenceFragment
 	{
 
+		@TargetApi( Build.VERSION_CODES.HONEYCOMB )
 		@Override
 		public void onCreate(Bundle savedInstanceState)
 		{
@@ -96,6 +102,8 @@ public class Settings extends PreferenceActivity
 			Preference share = (Preference)findPreference("main_menu_settings_about_share_key");
 			share.setOnPreferenceClickListener(new OnPreferenceClickListener()
 			{
+				@TargetApi( Build.VERSION_CODES.HONEYCOMB )
+				@SuppressLint( "NewApi" )
 				public boolean onPreferenceClick(Preference preference)
 				{
 					Intent sendIntent = new Intent();
@@ -112,6 +120,9 @@ public class Settings extends PreferenceActivity
 
 
 
+	/**
+	 * 
+	 */
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus)
 	{
@@ -120,6 +131,9 @@ public class Settings extends PreferenceActivity
 
 
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -128,11 +142,12 @@ public class Settings extends PreferenceActivity
 
 
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		Log.e("Settings", "" + item.getTitle());
-
 		switch( item.getItemId() )
 		{
 			case android.R.id.home:
