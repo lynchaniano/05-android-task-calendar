@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Author:     Alberto Gil Tesa
+    WebSite:    http://giltesa.com
+    License:    CC BY-NC-SA 3.0
+                http://goo.gl/CTYnN
+
+    Project:    Task Calendar
+    Package:    com.giltesa.taskcalendar
+    File:       /TaskCalendar/res/layout/main_search_results.xml
+
+-->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/main_search_results_list_empty"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
+        android:paddingTop="20dip"
+        android:text="@string/main_search_results_list_empty"
+        android:textSize="16sp"
+        android:visibility="gone" />
+	    
+	<ListView android:id="@+id/main_search_results_list_items" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" />
+
+</LinearLayout>

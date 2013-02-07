@@ -31,9 +31,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,7 +44,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.giltesa.taskcalendar.R;
 import com.giltesa.taskcalendar.adapter.TaskArrayAdapter;
@@ -163,13 +160,13 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 
 	/*
-		private void restartApp()
-		{
-			Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
-			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			//i.putExtra(FileExplorerApp.EXTRA_FOLDER, currentDir.getAbsolutePath());
-			startActivity(i);
-		}
+	private void restartApp()
+	{
+		Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+		i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		//i.putExtra(FileExplorerApp.EXTRA_FOLDER, currentDir.getAbsolutePath());
+		startActivity(i);
+	}
 	*/
 
 
@@ -255,9 +252,6 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 
 			case R.id.main_actionbar_search:
-				// Revisar: El buscador deberia de abrir un activity que mostrara cualquier tarea que contenga una o mas de las palabras usadas en la busqueda...
-				//Se pulsa el boton de busqueda
-				//Toast.makeText(this, "main_actionbar_search", Toast.LENGTH_SHORT).show();
 				return true;
 
 
@@ -330,7 +324,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 		public CharSequence getPageTitle(int position)
 		{
 			if( arrayTags.length > 0 )
-				return arrayTags[position].getName() +" " + arrayTags[position].getID();
+				return arrayTags[position].getName();
 			else
 				return null;
 		}
@@ -370,7 +364,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 				{
 					// Se recupera la tarea que ha lanzado el evento. Tambien su adapter:
 					final Task task = (Task)parent.getItemAtPosition(position);
-					final TaskArrayAdapter adapter = (TaskArrayAdapter)parent.getAdapter();
+					//final TaskArrayAdapter mAdapter = (TaskArrayAdapter)parent.getAdapter();
 
 					// Se instancia un menu PopupMenu para mostrar las opciones del Item:
 					PopupMenu popup = new PopupMenu(parent.getContext(), view);
@@ -420,37 +414,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 											db.execSQL("DELETE FROM task WHERE id = ?;", new Object[] { task.getID() });
 											db.close();
 
-
-											// Revisar:
-											/*
-											:: Esta parte sigue funcionando mal, si antes de eliminar las tareas te desplazas
-											:: por las diferentes pantallas del slider entonces si se muestran las eliminaciones correctamente
-											:: sin embargo si no las visualizas, entonces al eliminar la tarea no se refresca y cuando te desplazas
-											:: entre columnas aparecen las mismas tareas de la columna anterior en otras columnas
-											:: digamos que se "trafuca" el slider... hay que arreglar eso...
-											*/
-
-											// Se recuperan las tareas de la columna a actualizar y se cargan de nuevo en la lista de tareas:
-
-
-											//Log.e("DELETE", "mViewPager.getCurrentItem()= " + mViewPager.getCurrentItem());
-
-
-											Log.e("DELETE", "1= " + arrayTags[getArguments().getInt(ARG_SECTION_NUMBER) - 1].getID());
-											Log.e("DELETE", "2= " + arrayTags[mViewPager.getCurrentItem()].getID());
-
-
-											//arrayTasks = new TaskHelper(context).getArrayTasks(arrayTags[getArguments().getInt(ARG_SECTION_NUMBER) - 1].getID());
-											
-											
-											arrayTasks = new TaskHelper(context).getArrayTasks(arrayTags[mViewPager.getCurrentItem()].getID());
-											//TaskArrayAdapter adapter = new TaskArrayAdapter(context, arrayTasks);
-											listTask.setAdapter(adapter);
-											
-											
-											mSectionsPagerAdapter.notifyDataSetChanged();
-											adapter.notifyDataSetChanged();
-
+											// :: Falta implementar el refresco del listview tras borrar la tarea de la BD. No ha habido forma de conseguirlo...
 										}
 									});
 									alert.show();
@@ -475,36 +439,12 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 
 
+	/**
+	 * @param searchItem
+	 */
 	private void setupSearchView(MenuItem searchItem)
 	{
-		// Todo esto hacia busquedas en tiempo real de las aplicaciones instaladas en el movil
-		// Podria ser util para adatarlo a las busquedas de la base de datos.
-
-		/*if( false )//isAlwaysExpanded()
-		{
-			mSearchView.setIconifiedByDefault(false);
-		}
-		else
-		{
-			SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
-			if( searchManager != null )
-			{
-				List< SearchableInfo > searchables = searchManager.getSearchablesInGlobalSearch();
-
-				SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
-				for( SearchableInfo inf : searchables )
-				{
-					if( inf.getSuggestAuthority() != null && inf.getSuggestAuthority().startsWith("applications") )
-					{
-						info = inf;
-					}
-				}
-				mSearchView.setSearchableInfo(info);
-			}*/
-
 		searchItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		//}
-
 		mSearchView.setOnQueryTextListener(this);
 	}
 
@@ -515,8 +455,6 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 	 */
 	public boolean onQueryTextChange(String newText)
 	{
-		// TODO Apéndice de método generado automáticamente
-		//Toast.makeText(this, "Query = " + newText, Toast.LENGTH_SHORT).show();
 		return false;
 	}
 
@@ -524,11 +462,19 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 	/**
 	 * Obtiene el texto del cuadro de busqueda al pulsar ENVIAR
+	 * y lo envia al activity que muestra el resultado por pantalla:
 	 */
 	public boolean onQueryTextSubmit(String query)
 	{
-		// TODO Apéndice de método generado automáticamente
-		Toast.makeText(this, "Query = " + query + " : submitted", Toast.LENGTH_SHORT).show();
+		if( query.length() > 0 )
+		{
+			Intent intent = new Intent(context, SearchResults.class);
+			Bundle bundle = new Bundle();
+			bundle.putString("query", query);
+			intent.putExtra("dataSearch", bundle);
+			startActivity(intent);
+			return true;
+		}
 		return false;
 	}
 
