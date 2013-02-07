@@ -45,6 +45,10 @@
     <!-- MAIN.NEWTASK.ACTIONBAR -->
     <string name="main_newtask_actionbar_save">Save</string>
 
+    <!-- MAIN.SEARCHRESULT -->
+    <string name="main_search">Search Results</string>
+    <string name="main_search_results_list_empty">Not find anything matching your search.</string>
+  
     <!-- MAIN.MENU.SETTINGS.APP -->
     <string name="main_menu_settings_app_category">Application Preferences</string>
     <string name="main_menu_settings_app_sortTasksBy_title">Sort tasks by</string>
