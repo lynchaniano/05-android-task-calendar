@@ -28,10 +28,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.text.ParseException;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -102,7 +98,6 @@ public class SettingsDropbox extends Activity
 	private MenuItem					menuItemUpdate, menuItemLogin, menuItemLogout;
 	private Backup[]					backupsCloud;
 	private ListView					listView;
-	private Activity					context;
 
 
 
@@ -136,8 +131,6 @@ public class SettingsDropbox extends Activity
 		checkAppKeySetup();
 
 		listView = (ListView)findViewById(R.id.dropbox_list_items);
-
-		context = this;
 
 		// Display the proper UI state if logged in or not
 		//setLoggedIn(mApi.getSession().isLinked());
@@ -489,8 +482,6 @@ public class SettingsDropbox extends Activity
 			if( copiar )
 			{
 				// Se sube el fichero a dropbox 
-				////////////////////////////////////////////////////
-				// Uploading content.
 				FileInputStream inputStream = null;
 				try
 				{
@@ -501,7 +492,6 @@ public class SettingsDropbox extends Activity
 				}
 				catch( DropboxUnlinkedException e )
 				{
-					// User has unlinked, ask them to link again here.
 					Log.e("DbExampleLog", "User has unlinked.");
 				}
 				catch( DropboxException e )
@@ -524,7 +514,7 @@ public class SettingsDropbox extends Activity
 						{}
 					}
 				}
-				////////////////////////////////////////////////////
+
 			}
 		}
 

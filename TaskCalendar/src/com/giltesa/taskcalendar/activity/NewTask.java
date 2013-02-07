@@ -44,59 +44,56 @@ public class NewTask extends Activity
 	private EditText	title;
 	private EditText	description;
 	private Spinner		listTags;
-	private Bundle		dataTask;
+	private Bundle		dataReceived;
 
 
 
+	/**
+	 * Al crearse el activity se recuperan todos los controles y se autorellenan si es necesario.
+	 */
 	@TargetApi( Build.VERSION_CODES.HONEYCOMB )
 	@SuppressLint( "NewApi" )
 	public void onCreate(Bundle savedInstanceState)
 	{
+		// Se establece el theme del Activity:
 		setTheme(new PreferenceHelper(this).getTheme());
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.new_task);
 
-		//Permite que el icono de la barra de name se comporte como el boton atras, y su evento sea tratado desde onOptionsItemSelected()
+		// Activa el icono del ActionBar como boton Return:
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
-		// Campos del activity:
+		// Se recuperan los campos del activity:
 		title = (EditText)findViewById(R.id.main_newtask_title_text);
 		description = (EditText)findViewById(R.id.main_newtask_description_text);
 		listTags = (Spinner)findViewById(R.id.main_newtask_tag_spinner);
 
-		// Se carga la lista de etiquetas:
+		// Se carga la lista de etiquetas en el Spinner:
 		Tag[] arrayTags = new TagHelper(this).getArrayTags();
 		TagArrayAdapter adapter = new TagArrayAdapter(this, R.layout.settings_tags_listitem_spinner, arrayTags);
 		listTags.setAdapter(adapter);
 
-
 		// Al construirse el activity hay que preconfigurar el formulario segun si le hemos dado a "Nueva tarea" o a "Editar tarea".
-		dataTask = getIntent().getBundleExtra("dataTask");
+		dataReceived = getIntent().getBundleExtra("dataActivity");
 
-		// En ambos casos se autoselecciona el item del Spinner para que coincida con la ultima pagina vista.
-		listTags.setSelection(dataTask.getInt("positionSpinner"));
+		// En ambos casos se autoselecciona el item del Spinner para que coincida con la ultima pagina vista:
+		listTags.setSelection(dataReceived.getInt("positionTag"));
 
-		// Ademas si le hemos dado a Editar Tarea se mostrara la informacion que ya contubiera la tarea
-		if( !dataTask.getBoolean("isNewTask") )
+		// Ademas si le hemos dado a Editar Tarea se mostrara la informacion que ya contuviera la tarea:
+		if( !dataReceived.getBoolean("isNewTask") )
 		{
-			title.setText(dataTask.getString("title"));
-			description.setText(dataTask.getString("description"));
+			title.setText(dataReceived.getString("title"));
+			description.setText(dataReceived.getString("description"));
 		}
-
 	}
 
 
 
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus)
-	{
-		super.onWindowFocusChanged(hasFocus);
-	}
-
-
-
+	/**
+	 * Se carga el ActionBar en el activity
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -107,27 +104,21 @@ public class NewTask extends Activity
 
 
 
+	/**
+	 * Se tratan los eventos de los botones del ActionBar
+	 */
 	@SuppressLint( "SimpleDateFormat" )
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		// Se prepara la informacion que se le enviara al Activity Main al finalizar el formulario:
-		Intent intent = new Intent(this, Main.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		Bundle dataMain = new Bundle();
-
-
 		switch( item.getItemId() )
 		{
 			case android.R.id.home:
-				dataMain.putInt("positionSpinner", dataTask.getInt("positionSpinner"));
-				intent.putExtra("dataMain", dataMain);
-				startActivity(intent);
+				finish();
 				break;
 
 			case R.id.main_newtask_actionbar_save:
-				// Como minimo se ha de haber introducido un titulo para la tarea:
-				if( title.getText().length() <= 0 )
+				if( title.getText().length() == 0 )
 				{
 					Toast.makeText(this, getString(R.string.main_newtask_requeridFields), Toast.LENGTH_LONG).show();
 				}
@@ -136,7 +127,7 @@ public class NewTask extends Activity
 					SQLiteDatabase db = MySQLiteHelper.getInstance(NewTask.this).getWritableDatabase();
 					int idTag = ( (Tag)listTags.getSelectedItem() ).getID();
 
-					if( dataTask.getBoolean("isNewTask") )
+					if( dataReceived.getBoolean("isNewTask") )
 					{
 						// Se prepara la fecha:
 						Date date = Calendar.getInstance().getTime();
@@ -149,17 +140,19 @@ public class NewTask extends Activity
 					else
 					{
 						// Se actualiza la tarea con la nueva informacion
-						db.execSQL("UPDATE task SET title = ?, description = ?, tag_id = ? WHERE id = ?;", new Object[] { title.getText(), description.getText().toString(), idTag, dataTask.getInt("id") });
+						db.execSQL("UPDATE task SET title = ?, description = ?, tag_id = ? WHERE id = ?;", new Object[] { title.getText(), description.getText().toString(), idTag, dataReceived.getInt("id") });
 						Toast.makeText(this, getString(R.string.main_newtask_taskUpdated), Toast.LENGTH_LONG).show();
 					}
 					db.close();
 
-					// Se carga el Activity principal:
-					dataMain.putInt("positionSpinner", listTags.getSelectedItemPosition());
-					intent.putExtra("dataMain", dataMain);
-					startActivity(intent);
+					Intent intent = new Intent();
+					Bundle dataReturned = new Bundle();
+					dataReturned.putInt("positionTag", listTags.getSelectedItemPosition());
+					intent.putExtra("dataActivity", dataReturned);
+					setResult(11, intent);
+					finish();
 				}
-				return true;
+				break;
 
 			default:
 				break;

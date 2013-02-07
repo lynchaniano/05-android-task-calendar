@@ -16,6 +16,7 @@ package com.giltesa.taskcalendar.activity;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
@@ -38,6 +39,10 @@ public class SettingsLicense extends Activity
 
 
 
+	/**
+	 * 
+	 */
+	@SuppressLint( "NewApi" )
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -47,12 +52,12 @@ public class SettingsLicense extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_license);
 
-		//Permite que el icono de la barra de name se comporte como el boton atras, y su evento sea tratado desde onOptionsItemSelected()
+		// Permite que el icono de la barra de name se comporte como el boton atras, y su evento sea tratado desde onOptionsItemSelected()
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
 
-		//Carga la página web de la licencia Creative Commons - Desde internet:
+		// Carga la página web de la licencia Creative Commons - Desde internet:
 		/*
 		WebView webview = (WebView)findViewById(R.id.settings_license_webview);
 		webview.setInitialScale(100);
@@ -66,7 +71,7 @@ public class SettingsLicense extends Activity
 		*/
 
 
-		//Carga la página web de la licencia Creative Commons - Desde la propia aplicación:
+		// Carga la página web de la licencia Creative Commons - Desde la propia aplicación:
 		WebView webview = (WebView)findViewById(R.id.settings_license_webview);
 		WebSettings webSettings = webview.getSettings();
 		webSettings.setSupportZoom(true);
@@ -89,6 +94,9 @@ public class SettingsLicense extends Activity
 
 
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -100,15 +108,16 @@ public class SettingsLicense extends Activity
 
 
 
+	/**
+	 * Trata los eventos del ActionBar: Retrocede a atras o abre la licencia en el navegador.
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch( item.getItemId() )
 		{
 			case android.R.id.home:
-				Intent intent = new Intent(this, Settings.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
+				finish();
 				break;
 
 			case R.id.license_actionbar_web:

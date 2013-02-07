@@ -14,7 +14,7 @@
 		
 	NOTAS:
 		CAMBIO DE COLOR DEL TAG:
-			Se ha tenido que ajustar el ancho del Diañog para que no ocupe todo el ancho de la pantalla. Por alguna razon no lo hace automaticamente, pero si lo hace con el alto.
+			Se ha tenido que ajustar el ancho del Diaño para que no ocupe todo el ancho de la pantalla. Por alguna razon no lo hace automaticamente, pero si lo hace con el alto.
 			Habria que revisar porque sucede eso. Por el momento la clase ColorPickerDialog no tiene nada raro ni que ajuste los tamaños del Dialog por lo que es mas raro aun que una medida salga bien y la otra no, 
 			quiza pueda ser debido a las propiedades de ancho y alto de los XML, aunque no tiene mucho sentido ya que es un Dialog que es contenido en la pantalla, no en un item, lisview, etc.
 			Ademas este ajuste no es del todo preciso si la pantalla es de distinto tamaño...
@@ -22,7 +22,7 @@
 	
 		ELIMINACION DE TAGS:
 			No ha habido forma de conseguir eliminar Items del ListView, se podian recuperar correctamente y modificarlos pero no eliminarlos, siempre da error debido seguramente a un mal uso de los metodos.
-			Se ha obtado por actualizar el array de tags y cargarlo de nuevo al TexView, asi se actualizan todos los tags de golpe. (solucionar los problemas a cañonazos)
+			Se ha optado por actualizar el array de tags y cargarlo de nuevo al TexView, asi se actualizan todos los tags de golpe. (solucionar los problemas a cañonazos)
 			
 	INFO:
 		http://android.okhelp.cz/color-picker-dialog-android-example/
@@ -52,6 +52,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import com.giltesa.taskcalendar.R;
 import com.giltesa.taskcalendar.adapter.TagArrayAdapter;
@@ -212,10 +213,21 @@ public class SettingsTags extends Activity
 										// Se recuperan todos los Tags de la BD:
 										tags = new TagHelper(SettingsTags.this).getArrayTags();
 
-										// Se actualiza el ListView con los cambios:
-										TagArrayAdapter adapter = new TagArrayAdapter(SettingsTags.this, tags);
-										ListView list = (ListView)findViewById(R.id.tags_list_items);
-										list.setAdapter(adapter);
+										if( tags.length == 0 )
+										{
+											( (TextView)findViewById(R.id.tags_list_empty) ).setVisibility(TextView.VISIBLE);
+										}
+										else
+										{
+											( (TextView)findViewById(R.id.tags_list_empty) ).setVisibility(TextView.GONE);
+
+											// Se actualiza el ListView con los cambios:
+											TagArrayAdapter adapter = new TagArrayAdapter(SettingsTags.this, tags);
+											ListView list = (ListView)findViewById(R.id.tags_list_items);
+											list.setAdapter(adapter);
+
+											// :: El refresco en pantalla sigue sin hacerse correctamente al eliminar todas las tags
+										}
 									}
 								});
 								alert.show();
@@ -238,59 +250,7 @@ public class SettingsTags extends Activity
 
 
 	/**
-	 * Devuelve las etiquetas de la base de datos como un array de Tags.
-	 * 
-	 * @return
-	 */
-	/*
-	private Tag[] getTagsInDataBase()
-	{
-		Tag[] tags;
-
-		// Se realiza una conexion a la base de datos "TaskCalendar":
-		SQLiteDatabase db = MySQLiteHelper.getInstance(SettingsTags.this).getWritableDatabase();
-
-
-		// Después se recupera el número de etiquetas que hay en la tabla, se instancia el array de "tags" con el tamaño de tags recuperado de la consulta a la base de datos:
-		Cursor cursor = db.rawQuery("SELECT count() FROM tags", null);
-		cursor.moveToFirst();
-		tags = new Tag[cursor.getInt(0)];
-
-
-		// Si no hay etiquetas, se muestra un mensaje para invitar al usuario a que las cree. Si las hay, se carga la información.
-		if( tags.length == 0 )
-		{
-			( (TextView)findViewById(R.id.tags_list_empty) ).setVisibility(TextView.VISIBLE);
-		}
-		else
-		{
-			( (TextView)findViewById(R.id.tags_list_empty) ).setVisibility(TextView.GONE);
-
-			// Se recupera toda la información de las etiquetas y se guarda en cada componente del array:
-			cursor = db.rawQuery("SELECT id , name , color FROM tags", null);
-			if( cursor.moveToFirst() )
-			{
-				int i = 0;
-				do
-				{
-					int counter = 0; // Revisar Numero de tareas que usan la etiqueta actual (añadir consulta)
-					tags[i] = new Tag(cursor.getInt(0), cursor.getString(1), cursor.getString(2), counter);
-					i++;
-				}
-				while( cursor.moveToNext() );
-			}
-		}
-
-		// Y por ultimo se cierra la base de datos
-		db.close();
-
-		return tags;
-	}
-	*/
-
-
-	/**
-	 * Se infla el menu del ActionBar.
+	 * Se crea el actionBar del Activity
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)

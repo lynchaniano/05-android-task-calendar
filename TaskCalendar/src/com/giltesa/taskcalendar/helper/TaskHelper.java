@@ -38,6 +38,8 @@ public class TaskHelper
 
 
 	/**
+	 * Metodo que devuelve las tareas que coincidan con el numero de id del tag que se le indique.
+	 * 
 	 * @return
 	 */
 	public Task[] getArrayTasks(int idTag)
@@ -48,7 +50,7 @@ public class TaskHelper
 		SQLiteDatabase db = MySQLiteHelper.getInstance(context).getWritableDatabase();
 
 
-		// Después se recupera el número de etiquetas que hay en la tabla, se instancia el array de "tags" con el tamaño de tags recuperado de la consulta a la base de datos:
+		// Después se recupera el número de etiquetas que hay en la tabla, se instancia el array de "task" con el tamaño de task recuperado de la consulta a la base de datos:
 		Cursor cTask = db.rawQuery("SELECT count() FROM task WHERE tag_id = " + idTag, null);
 		cTask.moveToFirst();
 		tasks = new Task[cTask.getInt(0)];
@@ -56,22 +58,20 @@ public class TaskHelper
 
 		if( tasks.length > 0 )
 		{
-			// 
-			cTask = db.rawQuery("SELECT id, tag_id, creation_date, title, description FROM task WHERE tag_id = " + idTag + " ORDER BY " + prefs.getSortTask(), null);
+			// Se realiza la consulta SQL con las columnas que se necesitan y ordenando el resultado segun este configurado en las opciones de configuracion:
+			cTask = db.rawQuery("SELECT id, tag_id, creation_date, title, description FROM task WHERE tag_id = " + idTag + " " + prefs.getSortTask(), null);
 			if( cTask.moveToFirst() )
 			{
+				// Se recorren todas las tareas y se introducen en la lista de tareas que se devolvera por valor.
 				int i = 0;
 				Cursor cTags;
 				do
 				{
-					String color;
-
+					// Se realiza otra consulta para obtener el color de la etiqueta y asignarselo a la tarea.
 					cTags = db.rawQuery("SELECT color FROM tags WHERE id = " + idTag, null);
 					cTags.moveToFirst();
-					color = cTags.getString(0);
 
-
-					tasks[i] = new Task(cTask.getInt(0), cTask.getInt(1), cTask.getString(2), cTask.getString(3), cTask.getString(4), color);
+					tasks[i] = new Task(cTask.getInt(0), cTask.getInt(1), cTask.getString(2), cTask.getString(3), cTask.getString(4), cTags.getString(0));
 					i++;
 				}
 				while( cTask.moveToNext() );
@@ -87,6 +87,8 @@ public class TaskHelper
 
 
 	/**
+	 * Metodo que devuleve las tareas que contengan el string recibido por parametro en el titulo o la descripcion.
+	 * 
 	 * @return
 	 */
 	public Task[] getArrayTasks(String query)
@@ -105,8 +107,8 @@ public class TaskHelper
 
 		if( tasks.length > 0 )
 		{
-			// 
-			cTask = db.rawQuery("SELECT id, tag_id, creation_date, title, description FROM task WHERE title LIKE '%" + query + "%' OR description LIKE '%" + query + "%' ORDER BY " + prefs.getSortTask(), null);
+			//  Se recuperan las columnas teniendo en cuenta el texto a buscar en las tareas y el orden de obtencion:
+			cTask = db.rawQuery("SELECT id, tag_id, creation_date, title, description FROM task WHERE title LIKE '%" + query + "%' OR description LIKE '%" + query + "%' " + prefs.getSortTask(), null);
 			if( cTask.moveToFirst() )
 			{
 				int i = 0;

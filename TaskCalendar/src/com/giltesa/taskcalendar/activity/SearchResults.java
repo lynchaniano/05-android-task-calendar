@@ -7,6 +7,9 @@
     Project:    Task Calendar
     Package:    com.giltesa.taskcalendar.activity
     File:       /TaskCalendar/src/com/giltesa/taskcalendar/activity/SearchResults.java
+    
+    NOTAS:
+    	Por ahora las busquedas se realizan por el string exacto recibido y no por palabras sueltas.
 */
 
 
@@ -22,7 +25,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,6 +52,9 @@ public class SearchResults extends Activity
 
 
 
+	/**
+	 * 
+	 */
 	@TargetApi( Build.VERSION_CODES.HONEYCOMB )
 	@SuppressLint( "NewApi" )
 	public void onCreate(Bundle savedInstanceState)
@@ -113,8 +118,8 @@ public class SearchResults extends Activity
 									Intent intent = new Intent(context, NewTask.class);
 
 									// Se preparan los parametros a pasar dentro de un Bundle:
-									Bundle bundle = new Bundle();
-									bundle.putBoolean("isNewTask", false);
+									Bundle dataReturned = new Bundle();
+									dataReturned.putBoolean("isNewTask", false);
 
 									// Desde esta activity no hay otra forma de saber la posicion del tag en el Spinner si no es recorriendo todos los tags y comparandolos con el tag_id:
 									Tag[] arrayTags = new TagHelper(context).getArrayTags();
@@ -123,14 +128,14 @@ public class SearchResults extends Activity
 										if( arrayTags[index].getID() == task.getIdTag() )
 											break;
 
-									bundle.putInt("positionSpinner", index);
-									bundle.putInt("id", task.getID());
-									bundle.putInt("idTag", task.getIdTag());
-									bundle.putString("title", task.getTitle());
-									bundle.putString("description", task.getDescription());
+									dataReturned.putInt("positionTag", index);
+									dataReturned.putInt("id", task.getID());
+									dataReturned.putInt("idTag", task.getIdTag());
+									dataReturned.putString("title", task.getTitle());
+									dataReturned.putString("description", task.getDescription());
 
 									// Y por ultimo se adjunta el Bundle con los parametros al Intent y se envia al nuevo Activity:
-									intent.putExtra("dataTask", bundle);
+									intent.putExtra("dataActivity", dataReturned);
 									startActivity(intent);
 									return true;
 
@@ -175,35 +180,16 @@ public class SearchResults extends Activity
 
 
 
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus)
-	{
-		super.onWindowFocusChanged(hasFocus);
-	}
-
-
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		return true;
-	}
-
-
-
+	/**
+	 * 
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch( item.getItemId() )
 		{
 			case android.R.id.home:
-				// Se prepara la informacion que se le enviara al Activity Main:
-				Intent intent = new Intent(this, Main.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				Bundle dataMain = new Bundle();
-				dataMain.putInt("positionSpinner", dataSearch.getInt("positionSpinner"));
-				intent.putExtra("dataMain", dataMain);
-				startActivity(intent);
+				finish();
 				break;
 
 			default:

@@ -13,10 +13,12 @@
 <!-- 
 	POR IMPLEMENTAR/CONTROLAR:
 	
-		Si el directorio elegido por el usuario para guardar la informacion de la agenda no existe o es erroneo abria que avisar de ello o usar el de por defecto. O quizas en el momento de ser modificado comprobar si es correcto antes de permitir al usuario darle a aceptar o rechazar el cambio por ser erroneo...
-		Arreglar los iconos "cortados" about y compartir. 
-		Hay que cambiar el giltesa@giltesa.com por android@giltesa.com , android.developer@giltesa.com ...
-		Con el cambio de theme los iconos de opciones no se ven si el theme es blanco, habria que tener dos xml para indicar los diferentes colores de los iconos? duplicar iconos? Quizas iconos con borde negro?
+		El ListView que muestra los Tags o el que muestra las Task fallan al eliminar los items, no he conseguido que despues de borrarlos se refresque correctamente en pantalla.
+	
+		Falta que las tareas sean recursivas y una tarea pueda tener a su vez subtareas y estas subsubtareas, etc.
+	
+		La API vieja (la nueva ha salido en febrero de 2013) y usada en este proyecto solo funciona si se usa una version del SDK igual o inferior a la 9
+		Eso ha causado que en la gran mayoria de activities haya habido que poner etiquetas de supresion para errores. Por ejemplo con el ActionBar que no se implemento hasta la version 11. Es una chapuceria pero funciona.
 -->
 <!-- 
 	NOTAS:
@@ -29,15 +31,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.giltesa.taskcalendar"
     android:versionCode="1"
-    android:versionName="0.7.1" >
+    android:versionName="0.7.5" >
 
     <uses-sdk android:minSdkVersion="9" />
 
-    <!-- 
-    <uses-sdk
-        android:minSdkVersion="14" 
-        android:targetSdkVersion="15" />
-     -->
 
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -117,7 +114,6 @@
             android:label="@string/main_menu_settings_about_softwareLicense_title" >
         </activity>   
         
-
 		
 	</application>
 

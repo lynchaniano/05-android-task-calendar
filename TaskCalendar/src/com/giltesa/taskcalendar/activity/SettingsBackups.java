@@ -101,7 +101,7 @@ public class SettingsBackups extends Activity
 					{
 						AlertDialog.Builder alert;
 
-						// Se actualiza el nombre, o el color o se elimita el backup:
+						// Se actualiza el nombre, o el color o se elimina el backup:
 						switch( item.getItemId() )
 						{
 							case R.id.settings_backup_popupmenu_restore:
