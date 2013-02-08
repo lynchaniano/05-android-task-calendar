@@ -86,7 +86,7 @@ public class SettingsBackups extends Activity
 		{
 			public void onItemClick(final AdapterView< ? > parent, final View view, final int position, long id)
 			{
-				// Se recupera el backup que lanzo el evento y su adapter:
+				// Se recupera el backup que lanzo el evento y su taskArrayListAdapter:
 				final Backup backup = (Backup)parent.getItemAtPosition(position);
 
 				// Se instancia un PopupMenu para mostrar las opciones del backup:

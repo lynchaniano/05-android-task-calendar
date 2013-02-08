@@ -15,6 +15,8 @@
 
 package com.giltesa.taskcalendar.activity;
 
+import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -35,7 +37,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.giltesa.taskcalendar.R;
-import com.giltesa.taskcalendar.adapter.TaskArrayAdapter;
+import com.giltesa.taskcalendar.adapter.TaskArrayListAdapter;
 import com.giltesa.taskcalendar.helper.MySQLiteHelper;
 import com.giltesa.taskcalendar.helper.PreferenceHelper;
 import com.giltesa.taskcalendar.helper.TagHelper;
@@ -47,8 +49,13 @@ import com.giltesa.taskcalendar.util.Task;
 public class SearchResults extends Activity
 {
 
-	private Bundle			dataSearch;
-	private static Activity	context;
+	private Bundle				dataSearch;
+	private static Activity		context;
+
+	static ArrayList< Task >	taskArrayList;
+	static TaskArrayListAdapter	taskArrayListAdapter;
+	private static TaskHelper	taskHelper;
+	private static TextView		listEmpty;
 
 
 
@@ -76,29 +83,27 @@ public class SearchResults extends Activity
 
 
 		// Se recuperan las tareas encontradas segun la consulta:
-		Task[] arrayTasks = new TaskHelper(this).getArrayTasks(query);
+		taskArrayList = new TaskHelper(this).getArrayTasks(query);
 
 
 		// Se muestra el contenido del activity segun el resultado de la busqueda:
-		if( arrayTasks.length == 0 )
-		{
-			( (TextView)findViewById(R.id.main_search_results_list_empty) ).setVisibility(TextView.VISIBLE);
-		}
-		else
-		{
-			( (TextView)findViewById(R.id.main_search_results_list_empty) ).setVisibility(TextView.GONE);
 
+		// Se muestra o oculta el mensaje que indica si hay etiquetas o no:
+		listEmpty = (TextView)findViewById(R.id.main_search_results_list_empty);
+		listEmpty.setVisibility(( taskArrayList.size() <= 0 ) ? TextView.VISIBLE : TextView.GONE);
+
+		if( taskArrayList.size() > 0 )
+		{
 			ListView listTask = (ListView)findViewById(R.id.main_search_results_list_items);
-			TaskArrayAdapter adapter = new TaskArrayAdapter(this, arrayTasks);
+			taskArrayListAdapter = new TaskArrayListAdapter(this, taskArrayList);
 
 			listTask.setTextFilterEnabled(true);
 			listTask.setOnItemClickListener(new OnItemClickListener()
 			{
 				public void onItemClick(final AdapterView< ? > parent, final View view, final int position, long id)
 				{
-					// Se recupera la tarea que ha lanzado el evento. Tambien su adapter:
+					// Se recupera la tarea que ha lanzado el evento. Tambien su taskArrayListAdapter:
 					final Task task = (Task)parent.getItemAtPosition(position);
-					//final TaskArrayAdapter mAdapter = (TaskArrayAdapter)parent.getAdapter();
 
 					// Se instancia un menu PopupMenu para mostrar las opciones del Item:
 					PopupMenu popup = new PopupMenu(parent.getContext(), view);
@@ -122,10 +127,10 @@ public class SearchResults extends Activity
 									dataReturned.putBoolean("isNewTask", false);
 
 									// Desde esta activity no hay otra forma de saber la posicion del tag en el Spinner si no es recorriendo todos los tags y comparandolos con el tag_id:
-									Tag[] arrayTags = new TagHelper(context).getArrayTags();
+									ArrayList< Tag > tagArrayList = new TagHelper(context).getTagArrayList();
 									int index;
-									for( index = 0 ; index < arrayTags.length ; index++ )
-										if( arrayTags[index].getID() == task.getIdTag() )
+									for( index = 0 ; index < tagArrayList.size() ; index++ )
+										if( tagArrayList.get(index).getID() == task.getIdTag() )
 											break;
 
 									dataReturned.putInt("positionTag", index);
@@ -156,7 +161,12 @@ public class SearchResults extends Activity
 											db.execSQL("DELETE FROM task WHERE id = ?;", new Object[] { task.getID() });
 											db.close();
 
-											// :: Falta implementar el refresco del listview tras borrar la tarea de la BD. No ha habido forma de conseguirlo...
+											// Se elimina la tarea de la base de datos:
+											taskHelper.deleteTask(task);
+
+											// Se elimina la etiqueta y se refresca la pantalla:
+											taskArrayList.remove(position);
+											taskArrayListAdapter.notifyDataSetChanged();
 										}
 									});
 									alert.show();
@@ -173,7 +183,7 @@ public class SearchResults extends Activity
 				}
 			});
 
-			listTask.setAdapter(adapter);
+			listTask.setAdapter(taskArrayListAdapter);
 		}
 
 	}

@@ -23,18 +23,20 @@
 
 package com.giltesa.taskcalendar.activity;
 
+import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,8 +51,7 @@ import android.widget.PopupMenu;
 import android.widget.SearchView;
 
 import com.giltesa.taskcalendar.R;
-import com.giltesa.taskcalendar.adapter.TaskArrayAdapter;
-import com.giltesa.taskcalendar.helper.MySQLiteHelper;
+import com.giltesa.taskcalendar.adapter.TaskArrayListAdapter;
 import com.giltesa.taskcalendar.helper.PreferenceHelper;
 import com.giltesa.taskcalendar.helper.TagHelper;
 import com.giltesa.taskcalendar.helper.TaskHelper;
@@ -67,10 +68,11 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 	protected PreferenceHelper			prefs;
 	private static Activity				context;
-	static Tag[]						arrayTags;
-	static Task[]						arrayTasks;
+	static ArrayList< Tag >				tagArrayList;
+	static ArrayList< Task >			taskArrayList;
 	static ListView						listTask;
-	static TaskArrayAdapter				adapter;
+	static TaskArrayListAdapter			taskArrayListAdapter;
+	private static TaskHelper			taskHelper;
 
 
 
@@ -82,19 +84,20 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 	{
 		prefs = new PreferenceHelper(this);
 		setTheme(prefs.getTheme());
-		context = this;
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
-		// Create the adapter that will return a fragment for each of the three primary sections of the app.
+
+		// Create the taskArrayListAdapter that will return a fragment for each of the three primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-		// Set up the ViewPager with the sections adapter.
+		// Set up the ViewPager with the sections taskArrayListAdapter.
 		mViewPager = (ViewPager)findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
-		arrayTags = new TagHelper(context).getArrayTags();
+		tagArrayList = new TagHelper(this).getTagArrayList();
+		taskHelper = new TaskHelper(this);
+		context = this;
 	}
 
 
@@ -131,7 +134,13 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 		// Si el result es del activity NewTask:
 		if( requestCode == 1 && resultCode == 11 )
+		{
 			mViewPager.setCurrentItem(data.getBundleExtra("dataActivity").getInt("positionTag"));
+
+
+			// :: Falta actualizar el ListView despues de editar...
+			taskArrayListAdapter.notifyDataSetChanged(); // Revisar no hace nada
+		}
 	}
 
 
@@ -232,7 +241,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 								return true;
 
 							case R.id.main_menu_settings:
-								startActivity(new Intent(Main.this, Settings.class)); 
+								startActivity(new Intent(Main.this, Settings.class));
 								return true;
 
 							case R.id.main_menu_exit:
@@ -312,7 +321,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 		@Override
 		public int getCount()
 		{
-			return arrayTags.length;
+			return tagArrayList.size();
 		}
 
 
@@ -323,8 +332,8 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 		@Override
 		public CharSequence getPageTitle(int position)
 		{
-			if( arrayTags.length > 0 )
-				return arrayTags[position].getName();
+			if( tagArrayList.size() > 0 )
+				return tagArrayList.get(position).getName();
 			else
 				return null;
 		}
@@ -351,16 +360,15 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 		{
-			arrayTasks = new TaskHelper(context).getArrayTasks(arrayTags[getArguments().getInt(ARG_SECTION_NUMBER) - 1].getID());
+			taskArrayList = new TaskHelper(context).getArrayTasks(tagArrayList.get(getArguments().getInt(ARG_SECTION_NUMBER) - 1).getID());
 
 			listTask = new ListView(context);
 			listTask.setOnItemClickListener(new OnItemClickListener()
 			{
-				public void onItemClick(final AdapterView< ? > parent, final View view, final int position, long id)
+				public void onItemClick(AdapterView< ? > parent, final View view, final int position, long id)
 				{
-					// Se recupera la tarea que ha lanzado el evento. Tambien su adapter:
+					// Se recupera la tarea que ha lanzado el evento. Tambien su taskArrayListAdapter:
 					final Task task = (Task)parent.getItemAtPosition(position);
-					//final TaskArrayAdapter mAdapter = (TaskArrayAdapter)parent.getAdapter();
 
 					// Se instancia un menu PopupMenu para mostrar las opciones del Item:
 					PopupMenu popup = new PopupMenu(parent.getContext(), view);
@@ -406,11 +414,11 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 										public void onClick(DialogInterface dialog, int whichButton)
 										{
 											// Se elimina la tarea de la base de datos:
-											SQLiteDatabase db = MySQLiteHelper.getInstance(context).getWritableDatabase();
-											db.execSQL("DELETE FROM task WHERE id = ?;", new Object[] { task.getID() });
-											db.close();
+											taskHelper.deleteTask(task);
 
-											// :: Falta implementar el refresco del listTask tras borrar la tarea de la BD. No ha habido forma de conseguirlo...
+											// Se elimina la etiqueta y se refresca la pantalla:
+											taskArrayList.remove(position);
+											taskArrayListAdapter.notifyDataSetChanged();
 										}
 									});
 									alert.show();
@@ -428,8 +436,8 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 			});
 
 
-			adapter = new TaskArrayAdapter(context, arrayTasks);
-			listTask.setAdapter(adapter);
+			taskArrayListAdapter = new TaskArrayListAdapter(context, taskArrayList);
+			listTask.setAdapter(taskArrayListAdapter);
 			return listTask;
 		}
 	}

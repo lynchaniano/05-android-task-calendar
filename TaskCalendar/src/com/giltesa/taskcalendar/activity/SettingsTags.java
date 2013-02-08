@@ -19,10 +19,6 @@
 			quiza pueda ser debido a las propiedades de ancho y alto de los XML, aunque no tiene mucho sentido ya que es un Dialog que es contenido en la pantalla, no en un item, lisview, etc.
 			Ademas este ajuste no es del todo preciso si la pantalla es de distinto tamaño...
 			En el ejemplo que encontre tambien sucede lo mismo, quizas tenga que ver con la version de android ya que en las fotos si que se ve bien...
-	
-		ELIMINACION DE TAGS:
-			No ha habido forma de conseguir eliminar Items del ListView, se podian recuperar correctamente y modificarlos pero no eliminarlos, siempre da error debido seguramente a un mal uso de los metodos.
-			Se ha optado por actualizar el array de tags y cargarlo de nuevo al TexView, asi se actualizan todos los tags de golpe. (solucionar los problemas a cañonazos)
 			
 	INFO:
 		http://android.okhelp.cz/color-picker-dialog-android-example/
@@ -32,16 +28,17 @@
 
 package com.giltesa.taskcalendar.activity;
 
+import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -55,8 +52,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.giltesa.taskcalendar.R;
-import com.giltesa.taskcalendar.adapter.TagArrayAdapter;
-import com.giltesa.taskcalendar.helper.MySQLiteHelper;
+import com.giltesa.taskcalendar.adapter.TagArrayListAdapter;
 import com.giltesa.taskcalendar.helper.PreferenceHelper;
 import com.giltesa.taskcalendar.helper.TagHelper;
 import com.giltesa.taskcalendar.util.ColorPickerDialog;
@@ -66,97 +62,117 @@ import com.giltesa.taskcalendar.util.Tag;
 
 public class SettingsTags extends Activity
 {
-	private PreferenceHelper	prefs;
-	private Tag[]				tags;
+	private static ArrayList< Tag >		tagArrayList;
+	private static TagArrayListAdapter	tagArrayListAdapter;
+	private static TagHelper			tagHelper;
+	private static TextView				listEmpty;
 
 
 
 	/**
-	 * Desde este onCreate se carga toda la interfaz, se recupera la información de la base de datos y se representa como una lista en pantalla.
+	 * 
 	 */
-	@SuppressLint( "NewApi" )
+	@TargetApi( Build.VERSION_CODES.HONEYCOMB )
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		// Se aplica el theme que corresponda:
-		prefs = new PreferenceHelper(this);
-		setTheme(prefs.getTheme());
+		setTheme(new PreferenceHelper(this).getTheme());
 
 		// Se llama al padre y se establece el layout para el activity:
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_tags);
 
-		// Permite que el icono del ActionBar se comporte como el botón atrás, y su evento sea tratado desde onOptionsItemSelected()
+		// Permite al icono del activity funcionar como boton:
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
 
-		// Se recuperan todos los Tags de la BD:
-		tags = new TagHelper(this).getArrayTags();//getTagsInDataBase();
+		// Se recupera el TextView que indica si hay o no etiquetas:
+		listEmpty = (TextView)findViewById(R.id.tags_list_empty);
 
 
-		// Una vez con toda la información en el array se traspasa al ListView:
-		TagArrayAdapter adapter = new TagArrayAdapter(this, tags);
-		ListView list = (ListView)findViewById(R.id.tags_list_items);
-		list.setAdapter(adapter);
+		// Se instancia un TagHelper para hacer todas las consultas SQL:
+		tagHelper = new TagHelper(this);
+
+		// Se recuperan todas las etiquetas de la BD:
+		tagArrayList = tagHelper.getTagArrayList();
+
+		// Se muestra o oculta el mensaje que indica si hay etiquetas o no:
+		listEmpty.setVisibility(( tagArrayList.size() <= 0 ) ? TextView.VISIBLE : TextView.GONE);
 
 
-		// Se añade el evento a los item del ListView:
-		list.setTextFilterEnabled(true);
-		list.setOnItemClickListener(new OnItemClickListener()
+		// Se crea un taskArrayListAdapter pasandole el array de etiquetas y despues se añade a la lista del activity:
+		tagArrayListAdapter = new TagArrayListAdapter(this, tagArrayList);
+		ListView listView = (ListView)findViewById(R.id.tags_list_items);
+		listView.setAdapter(tagArrayListAdapter);
+
+		// A continuacion se añaden los eventos de la lista y sus items:
+		listView.setTextFilterEnabled(true);
+		listView.setOnItemClickListener(getOnItemClickListener());
+
+	}
+
+
+
+	/**
+	 * Metodo privado que devuelve el listener del listView del activity.
+	 * Esta separado por simple legibilidad del codigo.
+	 * 
+	 * @return
+	 */
+	private OnItemClickListener getOnItemClickListener()
+	{
+		return new OnItemClickListener()
 		{
-			public void onItemClick(final AdapterView< ? > parent, final View view, final int position, long id)
+			@TargetApi( Build.VERSION_CODES.HONEYCOMB )
+			@SuppressLint( "NewApi" )
+			public void onItemClick(AdapterView< ? > parent, final View view, final int position, long id)
 			{
-				// Se recupera el tag que lanzo el evento y su adapter:
+				// Se recupera el Tag que ha lanzado el evento:
 				final Tag tag = (Tag)parent.getItemAtPosition(position);
-				final TagArrayAdapter adapter = (TagArrayAdapter)parent.getAdapter();
 
-				// Se instancia un PopupMenu para mostrar las opciones del tag:
-				PopupMenu popup = new PopupMenu(parent.getContext(), view);
-				MenuInflater inflater = popup.getMenuInflater();
-				inflater.inflate(R.menu.settings_tags_menu, popup.getMenu());
+				// Se crea un PopupMenu para mostrar las opciones del tag:
+				PopupMenu popupMenu = new PopupMenu(parent.getContext(), view);
+				popupMenu.getMenuInflater().inflate(R.menu.settings_tags_menu, popupMenu.getMenu());
 
 				// Se crea el listener del PopupMenu para tratar los eventos de los subitems:
-				popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+				popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
 				{
 					public boolean onMenuItemClick(MenuItem item)
 					{
-						AlertDialog.Builder alert;
+						AlertDialog.Builder alertDialog;
 
 						// Se actualiza el nombre, o el color o se elimita el tag:
 						switch( item.getItemId() )
 						{
+
 							case R.id.settings_tags_popupmenu_name:
 								// Se instancia un AlertDialog y se le asigna un titulo y un mensaje:
-								alert = new AlertDialog.Builder(SettingsTags.this);
-								alert.setTitle(getString(R.string.settings_tags_popupmenu_name_title));
-								alert.setMessage(getString(R.string.settings_tags_popupmenu_name_message) + " " + tag.getName());
+								alertDialog = new AlertDialog.Builder(SettingsTags.this);
+								alertDialog.setTitle(getString(R.string.settings_tags_popupmenu_name_title));
+								alertDialog.setMessage(getString(R.string.settings_tags_popupmenu_name_message) + " " + tag.getName());
 
 								// Se le inserta un EditText:
 								final EditText input = new EditText(SettingsTags.this);
-								alert.setView(input);
+								alertDialog.setView(input);
 
 								// Se crean los listeners para los botones del AlertDialog:
-								alert.setNegativeButton(android.R.string.cancel, null);
-								alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+								alertDialog.setNegativeButton(android.R.string.cancel, null);
+								alertDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
 								{
 									public void onClick(DialogInterface dialog, int whichButton)
 									{
-										// Se recupera el nuevo nombre:
-										String name = validateNameTag(input.getText(), tag.getName());
+										// Se edita el nombre de la etiqueta en la base de datos, antes se valida el nombre, si es correcto se deja tal cual, si no el de por defecto:
+										String name = ( input.getText().toString().length() > 0 ) ? input.getText().toString() : getString(R.string.settings_tags_popupmenu_name_defaultName);
 										tag.setName(name);
-
-
-										// Se actualiza la BD:
-										SQLiteDatabase db = MySQLiteHelper.getInstance(SettingsTags.this).getWritableDatabase();
-										db.execSQL("UPDATE tags SET name = ? WHERE id = ?;", new Object[] { tag.getName(), tag.getID() });
-										db.close();
+										tagHelper.updateTag(tag);
 
 										// Se actualiza el ListView con los cambios:
-										adapter.notifyDataSetChanged();
+										tagArrayListAdapter.notifyDataSetChanged();
 									}
 								});
-								alert.show();
+								alertDialog.show();
 								return true;
 
 
@@ -171,12 +187,10 @@ public class SettingsTags extends Activity
 										tag.setColor("#" + temp.substring(2, temp.length()));
 
 										// Se actualiza la BD:
-										SQLiteDatabase db = MySQLiteHelper.getInstance(SettingsTags.this).getWritableDatabase();
-										db.execSQL("UPDATE tags SET color = ? WHERE id = ?;", new Object[] { tag.getColor(), tag.getID() });
-										db.close();
+										tagHelper.updateTag(tag);
 
 										// Se actualiza el ListView con los cambios:
-										adapter.notifyDataSetChanged();
+										tagArrayListAdapter.notifyDataSetChanged();
 									}
 								};
 
@@ -194,58 +208,42 @@ public class SettingsTags extends Activity
 
 							case R.id.settings_tags_popupmenu_delete:
 								// Se crea un AlertDialog y se le asigna un titulo y un mensaje:
-								alert = new AlertDialog.Builder(SettingsTags.this);
-								alert.setTitle(getString(R.string.settings_tags_popupmenu_delete_title));
-								alert.setMessage(getString(R.string.settings_tags_popupmenu_delete_message1) + tag.getName() + getString(R.string.settings_tags_popupmenu_delete_message2));
+								alertDialog = new AlertDialog.Builder(SettingsTags.this);
+								alertDialog.setTitle(getString(R.string.settings_tags_popupmenu_delete_title));
+								alertDialog.setMessage(getString(R.string.settings_tags_popupmenu_delete_message1) + tag.getName() + getString(R.string.settings_tags_popupmenu_delete_message2));
 
 								// Se crean los listeners para los botones del AlertDialog:
-								alert.setNegativeButton(android.R.string.cancel, null);
-								alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+								alertDialog.setNegativeButton(android.R.string.cancel, null);
+								alertDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
 								{
 									public void onClick(DialogInterface dialog, int whichButton)
 									{
-										// Al borrar la etiqueta tambien se borran sus tareas, no se dejan huerfanas en la base de datos:
-										SQLiteDatabase db = MySQLiteHelper.getInstance(SettingsTags.this).getWritableDatabase();
-										db.execSQL("DELETE FROM tags WHERE id = ?;", new Object[] { tag.getID() });
-										db.execSQL("DELETE FROM task WHERE tag_id = ?;", new Object[] { tag.getID() });
-										db.close();
+										// Se borra la etiqueta y sus tareas asociadas de la base de datos:
+										tagHelper.deleteTagAndTasks(tag.getID());
 
-										// Se recuperan todos los Tags de la BD:
-										tags = new TagHelper(SettingsTags.this).getArrayTags();
+										// Se actualiza el ListView con los cambios:
+										tagArrayList.remove(position);
+										tagArrayListAdapter.notifyDataSetChanged();
 
-										if( tags.length == 0 )
-										{
-											( (TextView)findViewById(R.id.tags_list_empty) ).setVisibility(TextView.VISIBLE);
-										}
-										else
-										{
-											( (TextView)findViewById(R.id.tags_list_empty) ).setVisibility(TextView.GONE);
-
-											// Se actualiza el ListView con los cambios:
-											TagArrayAdapter adapter = new TagArrayAdapter(SettingsTags.this, tags);
-											ListView list = (ListView)findViewById(R.id.tags_list_items);
-											list.setAdapter(adapter);
-
-											// :: El refresco en pantalla sigue sin hacerse correctamente al eliminar todas las tags
-										}
+										// Se muestra o oculta el mensaje que indica si hay etiquetas o no:
+										listEmpty.setVisibility(( tagArrayList.size() <= 0 ) ? TextView.VISIBLE : TextView.GONE);
 									}
 								});
-								alert.show();
+								alertDialog.show();
 								return true;
 
 							default:
 								return false;
 						}
 					}
+
 				});
+				// Se muestra el PopupMenu por pantalla:
+				popupMenu.show();
 
-				// Se muestra el Menú por pantalla:
-				popup.show();
 			}
-		});
-
-
-	} //Fin onCreate
+		};
+	}
 
 
 
@@ -271,42 +269,40 @@ public class SettingsTags extends Activity
 		switch( item.getItemId() )
 		{
 			case android.R.id.home:
-				Intent intent = new Intent(this, Settings.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
+				finish();
 				break;
 
 			case R.id.tags_actionbar_add:
 				// Se instancia un AlertDialog y se le asigna un titulo y un mensaje:
-				AlertDialog.Builder alert = new AlertDialog.Builder(SettingsTags.this);
-				alert.setTitle(getString(R.string.settings_tags_popupmenu_name_title));
+				AlertDialog.Builder alertDialog = new AlertDialog.Builder(SettingsTags.this);
+				alertDialog.setTitle(getString(R.string.settings_tags_popupmenu_name_title));
 
 				// Se le inserta un EditText:
 				final EditText input = new EditText(SettingsTags.this);
-				alert.setView(input);
+				alertDialog.setView(input);
 
 				// Se crean los listeners para los botones del AlertDialog:
-				alert.setNegativeButton(android.R.string.cancel, null);
-				alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+				alertDialog.setNegativeButton(android.R.string.cancel, null);
+				alertDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
 				{
 					public void onClick(DialogInterface dialog, int whichButton)
 					{
-						// Se inserta la nueva tag en la BD:
-						SQLiteDatabase db = MySQLiteHelper.getInstance(SettingsTags.this).getWritableDatabase();
-						String name = validateNameTag(input.getText(), getString(R.string.settings_tags_popupmenu_name_defaultName));
-						db.execSQL("INSERT INTO tags VALUES ( NULL, ?, '#BDBDBD' );", new Object[] { name });
-						db.close();
+						// Se inserta la nueva etiqueta en la base de datos, antes se valida el nombre, si es correcto se deja tal cual, si no el de por defecto:
+						String name = ( input.getText().toString().length() > 0 ) ? input.getText().toString() : getString(R.string.settings_tags_popupmenu_name_defaultName);
+						tagHelper.insertTag(name);
 
-						// Se recuperan todos los Tags de la BD:
-						tags = new TagHelper(SettingsTags.this).getArrayTags();//getTagsInDataBase();
+						// Se recupera la etiquete recien insertada (para obtener su id):
+						Tag tag = tagHelper.getTagLast();
 
-						// Se actualiza el ListView con los cambios:
-						TagArrayAdapter adapter = new TagArrayAdapter(SettingsTags.this, tags);
-						ListView list = (ListView)findViewById(R.id.tags_list_items);
-						list.setAdapter(adapter);
+						// Se inserta la nueva etiqueta en la pantalla y se refresca:
+						tagArrayList.add(tag);
+						tagArrayListAdapter.notifyDataSetChanged();
+
+						// Se muestra o oculta el mensaje que indica si hay etiquetas o no:
+						listEmpty.setVisibility(( tagArrayList.size() <= 0 ) ? TextView.VISIBLE : TextView.GONE);
 					}
 				});
-				alert.show();
+				alertDialog.show();
 				break;
 
 			default:
@@ -315,18 +311,5 @@ public class SettingsTags extends Activity
 		return true;
 	}
 
-
-
-	/**
-	 * Devuelve un string con el nuevo nombre de la etiqueta si no esta en blanco, o en caso contrario el nombre por defecto facilitado.
-	 * 
-	 * @param nameTag
-	 * @param nameDefault
-	 * @return
-	 */
-	private String validateNameTag(Editable nameTag, String nameDefault)
-	{
-		return ( nameTag.toString().equals("") ) ? nameDefault : "" + nameTag;
-	}
 
 }

@@ -70,7 +70,7 @@
 
     
     	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG -->
-    	<string name="settings_tags_task">"tarea"</string>
+    	<string name="settings_tags_task">"tareas"</string>
     	<string name="settings_tags_itemList_empty">"Agregar una etiqueta con el botón superior"</string>
     
 	    	<!-- MAIN.MENU.SETTINGS.CALENDAR.TAG.ACTIONBAR -->
@@ -138,11 +138,11 @@
     <string name="main_menu_settings_about_softwareLicense_title">"Términos de la licencia"</string>
 
 	    <!-- MAIN.MENU.SETTINGS.ABOUT.ABOUT -->
-	    <string name="about_apptitle">"Calendario de Tareas para Android"</string>
+	    <string name="about_apptitle">Calendario de Tareas\npara Android</string>
 	    <string name="about_version">"Versión"</string>
 	    <string name="about_author">"giltesa @ 2013"</string>
 	    <string name="about_blog_url">"http://giltesa.com"</string>
-	    <string name="about_blog_url_title">"&lt;u&gt;www.giltesa.com&lt;/u&gt;"</string>
+	    <string name="about_blog_url_title"><u>www.giltesa.com</u></string>
     
     
     	<!-- MAIN.MENU.SETTINGS.ABOUT.LICENSE -->

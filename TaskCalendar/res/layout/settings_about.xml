@@ -7,8 +7,7 @@
 
     Project:    Task Calendar
     Package:    com.giltesa.taskcalendar
-    File:       /TaskCalendar/res/layout/settings_about.xml
--->
+    File:       /TaskCalendar/res/layout/settings_about.xml-->
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -36,12 +35,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:gravity="center"
             android:shadowColor="#FFFFFF"
             android:shadowDx="0"
             android:shadowDy="1"
             android:shadowRadius="1"
             android:text="@string/about_apptitle"
-            android:textSize="25dip" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/settings_about_version"
@@ -49,16 +49,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/about_version"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
          <TextView
-            android:id="@+id/settings_about_uthor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dip"
-            android:text="@string/about_author"
-            android:textSize="18dip" />        
+             android:id="@+id/settings_about_uthor"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center_horizontal"
+             android:layout_marginTop="40dip"
+             android:text="@string/about_author"
+             android:textSize="18sp" />
         
         <TextView
             android:id="@+id/settings_about_url"
@@ -68,7 +68,7 @@
             android:clickable="true"
             android:onClick="onClick"
             android:text="@string/about_blog_url_title"
-            android:textSize="18dip" />
+            android:textSize="18sp" />
                 
     </LinearLayout>
 
