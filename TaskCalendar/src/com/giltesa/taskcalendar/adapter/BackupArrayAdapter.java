@@ -6,7 +6,7 @@
 
     Project:    Task Calendar
     Package:    com.giltesa.taskcalendar.adapter
-    File:       /TaskCalendar/src/com/giltesa/taskcalendar/adapter/TagArrayAdapter.java
+    File:       /TaskCalendar/src/com/giltesa/taskcalendar/taskArrayListAdapter/TagArrayListAdapter.java
     
     Class:
     			public  class BackupArrayAdapter

@@ -6,15 +6,17 @@
 
     Project:    Task Calendar
     Package:    com.giltesa.taskcalendar.adapter
-    File:       /TaskCalendar/src/com/giltesa/taskcalendar/adapter/TaskArrayAdapter.java
+    File:       /TaskCalendar/src/com/giltesa/taskcalendar/taskArrayListAdapter/TaskArrayListAdapter.java
     
     Class:
-    			public  class TaskArrayAdapter
+    			public  class TaskArrayListAdapter
     			private class TaskViewHolder    
 */
 
 
 package com.giltesa.taskcalendar.adapter;
+
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -28,11 +30,11 @@ import com.giltesa.taskcalendar.R;
 import com.giltesa.taskcalendar.util.Task;
 
 
-public class TaskArrayAdapter extends ArrayAdapter< Task >
+public class TaskArrayListAdapter extends ArrayAdapter< Task >
 {
 
-	Activity	context;
-	Task[]		tasks;
+	Activity			context;
+	ArrayList< Task >	taskArrayList;
 
 
 
@@ -40,11 +42,11 @@ public class TaskArrayAdapter extends ArrayAdapter< Task >
 	 * @param context
 	 * @param tasks
 	 */
-	public TaskArrayAdapter(Activity context, Task[] tasks)
+	public TaskArrayListAdapter(Activity context, ArrayList< Task > taskArrayList)
 	{
-		super(context, R.layout.settings_tags_listitem, tasks);
+		super(context, R.layout.settings_tags_listitem, taskArrayList);
 		this.context = context;
-		this.tasks = tasks;
+		this.taskArrayList = taskArrayList;
 	}
 
 
@@ -54,11 +56,11 @@ public class TaskArrayAdapter extends ArrayAdapter< Task >
 	 * @param simpleSpinnerItem
 	 * @param tasks
 	 */
-	public TaskArrayAdapter(Activity context, int simpleSpinnerItem, Task[] tasks)
+	public TaskArrayListAdapter(Activity context, int simpleSpinnerItem, ArrayList< Task > taskArrayList)
 	{
-		super(context, simpleSpinnerItem, tasks);
+		super(context, simpleSpinnerItem, taskArrayList);
 		this.context = context;
-		this.tasks = tasks;
+		this.taskArrayList = taskArrayList;
 	}
 
 
@@ -91,12 +93,12 @@ public class TaskArrayAdapter extends ArrayAdapter< Task >
 			holder = (TaskViewHolder)item.getTag();
 		}
 
-		holder.id.setText(tasks[position].getID() + "");
-		holder.idTag.setText(tasks[position].getIdTag() + "");
-		holder.date.setText(tasks[position].getDate());
-		holder.title.setText(tasks[position].getTitle());
-		holder.description.setText(tasks[position].getDescription());
-		holder.color.setBackgroundColor(Color.parseColor(tasks[position].getColor()));
+		holder.id.setText(taskArrayList.get(position).getID() + "");
+		holder.idTag.setText(taskArrayList.get(position).getIdTag() + "");
+		holder.date.setText(taskArrayList.get(position).getDate());
+		holder.title.setText(taskArrayList.get(position).getTitle());
+		holder.description.setText(taskArrayList.get(position).getDescription());
+		holder.color.setBackgroundColor(Color.parseColor(taskArrayList.get(position).getColor()));
 
 		return( item );
 	}

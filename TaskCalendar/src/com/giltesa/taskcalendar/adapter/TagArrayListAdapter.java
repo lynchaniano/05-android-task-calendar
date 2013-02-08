@@ -6,15 +6,17 @@
 
     Project:    Task Calendar
     Package:    com.giltesa.taskcalendar.adapter
-    File:       /TaskCalendar/src/com/giltesa/taskcalendar/adapter/TagArrayAdapter.java
+    File:       /TaskCalendar/src/com/giltesa/taskcalendar/taskArrayListAdapter/TagArrayListAdapter.java
     
     Class:
-    			public  class TagArrayAdapter
+    			public  class TagArrayListAdapter
     			private class TagViewHolder    
 */
 
 
 package com.giltesa.taskcalendar.adapter;
+
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -28,23 +30,23 @@ import com.giltesa.taskcalendar.R;
 import com.giltesa.taskcalendar.util.Tag;
 
 
-public class TagArrayAdapter extends ArrayAdapter< Tag >
+public class TagArrayListAdapter extends ArrayAdapter< Tag >
 {
 
-	Activity	context;
-	Tag[]		tags;
+	Activity			context;
+	ArrayList< Tag >	tagArrayList;
 
 
 
 	/**
 	 * @param context
-	 * @param tasks
+	 * @param tagArrayList
 	 */
-	public TagArrayAdapter(Activity context, Tag[] tags)
+	public TagArrayListAdapter(Activity context, ArrayList< Tag > tagArrayList)
 	{
-		super(context, R.layout.settings_tags_listitem, tags);
+		super(context, R.layout.settings_tags_listitem, tagArrayList);
 		this.context = context;
-		this.tags = tags;
+		this.tagArrayList = tagArrayList;
 	}
 
 
@@ -52,13 +54,13 @@ public class TagArrayAdapter extends ArrayAdapter< Tag >
 	/**
 	 * @param context
 	 * @param simpleSpinnerItem
-	 * @param tasks
+	 * @param tagArrayList
 	 */
-	public TagArrayAdapter(Activity context, int simpleSpinnerItem, Tag[] tags)
+	public TagArrayListAdapter(Activity context, int simpleSpinnerItem, ArrayList< Tag > tagArrayList)
 	{
-		super(context, simpleSpinnerItem, tags);
+		super(context, simpleSpinnerItem, tagArrayList);
 		this.context = context;
-		this.tags = tags;
+		this.tagArrayList = tagArrayList;
 	}
 
 
@@ -88,10 +90,10 @@ public class TagArrayAdapter extends ArrayAdapter< Tag >
 			holder = (TagViewHolder)item.getTag();
 		}
 
-		holder.id.setText(tags[position].getID() + "");
-		holder.name.setText(tags[position].getName());
-		holder.color.setBackgroundColor(Color.parseColor(tags[position].getColor()));
-		holder.counter.setText(tags[position].getCounter() + " " + context.getResources().getString(R.string.settings_tags_task));
+		holder.id.setText(tagArrayList.get(position).getID() + "");
+		holder.name.setText(tagArrayList.get(position).getName());
+		holder.color.setBackgroundColor(Color.parseColor(tagArrayList.get(position).getColor()));
+		holder.counter.setText(tagArrayList.get(position).getCounter() + " " + context.getResources().getString(R.string.settings_tags_task));
 
 		return( item );
 	}
@@ -99,7 +101,7 @@ public class TagArrayAdapter extends ArrayAdapter< Tag >
 
 
 	/**
-	 * Clase TagViewHolder:
+	 * Clase TagViewHolder
 	 */
 	private class TagViewHolder
 	{

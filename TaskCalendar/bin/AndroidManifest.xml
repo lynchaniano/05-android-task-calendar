@@ -31,7 +31,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.giltesa.taskcalendar"
     android:versionCode="1"
-    android:versionName="0.7.5" >
+    android:versionName="0.8.1" >
 
     <uses-sdk android:minSdkVersion="9" />
 
@@ -50,7 +50,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>    
+            </intent-filter>             
         </activity>
         
         <activity
@@ -67,10 +67,9 @@
         
         <activity
         	android:name=".activity.SearchResults"
+        	android:icon="@drawable/ic_actionbar_search"
             android:label="@string/main_search" >
         </activity>
-        <!-- android:icon="@drawable/ic_SearchResults" -->        
-        
         
         <activity
         	android:name=".activity.SettingsTags"
