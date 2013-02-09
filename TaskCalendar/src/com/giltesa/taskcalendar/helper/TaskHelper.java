@@ -12,8 +12,12 @@
 
 package com.giltesa.taskcalendar.helper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -138,6 +142,37 @@ public class TaskHelper
 	{
 		SQLiteDatabase db = MySQLiteHelper.getInstance(context).getWritableDatabase();
 		db.execSQL("DELETE FROM task WHERE id = ?;", new Object[] { task.getID() });
+		db.close();
+	}
+
+
+
+	/**
+	 * @param task
+	 */
+	@SuppressLint( "SimpleDateFormat" )
+	public void insertTask(Task task)
+	{
+		// Se prepara la fecha:
+		Date date = Calendar.getInstance().getTime();
+		String formattedDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(date);
+
+		// Se inserta la nueva tarea:
+		SQLiteDatabase db = MySQLiteHelper.getInstance(context).getWritableDatabase();
+		db.execSQL("INSERT INTO task VALUES ( NULL, ?, ?, ?, ?);", new Object[] { task.getIDTag(), formattedDate, task.getTitle(), task.getDescription() });
+		db.close();
+	}
+
+
+
+	/**
+	 * @param task
+	 */
+	public void updateTask(Task task)
+	{
+		// Se actualiza la tarea con la nueva informacion
+		SQLiteDatabase db = MySQLiteHelper.getInstance(context).getWritableDatabase();
+		db.execSQL("UPDATE task SET title = ?, description = ?, tag_id = ? WHERE id = ?;", new Object[] { task.getTitle(), task.getDescription(), task.getIDTag(), task.getID() });
 		db.close();
 	}
 }

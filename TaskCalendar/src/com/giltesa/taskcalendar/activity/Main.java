@@ -36,7 +36,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -62,7 +61,16 @@ import com.giltesa.taskcalendar.util.Task;
 @SuppressLint( "NewApi" )
 public class Main extends FragmentActivity implements SearchView.OnQueryTextListener
 {
+	/**
+	 * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the
+	 * sections. We use a {@link android.support.v4.app.FragmentPagerAdapter} derivative, which will
+	 * keep every loaded fragment in memory. If this becomes too memory intensive, it may be best
+	 * to switch to a {@link android.support.v4.app.FragmentStatePagerAdapter}.
+	 */
 	private static SectionsPagerAdapter	mSectionsPagerAdapter;
+	/**
+	 * The {@link ViewPager} that will host the section contents.
+	 */
 	private static ViewPager			mViewPager;
 	private SearchView					mSearchView;
 
@@ -73,6 +81,9 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 	static ListView						listTask;
 	static TaskArrayListAdapter			taskArrayListAdapter;
 	private static TaskHelper			taskHelper;
+
+	// Constantes publicas para facilitar la legibilidad en el metodo onActivityResult y en las Activityes hijas:
+	public static final int				BACK	= 0, NEWTASK = 1;
 
 
 
@@ -125,22 +136,23 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 
 
 	/**
-	 * Se tratan los posibles Intents recibidos de otros activities:
+	 * Desde este procedimiento se tratan todos los Intents que se reciban de otras Activities:
+	 * El primer y segundo parametro sirven para saber quien lanzo la llamada y quien devolvio la respuesta.
+	 * Es decir, el padre (Main) puede tener varios "startActivityForResult()" para llamar a otra Activity.
+	 * Y la Activity hija puede tener varios "setResult()" para devolver los datos.
+	 * Es con esos dos parametros como se pueden controlar esos datos.
+	 * |
+	 * Al final no se uso para nada, no hubo forma de actualizar la pantalla tras interactuar con sus items.
+	 * Asi que el activity que crea
 	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		super.onActivityResult(requestCode, resultCode, data);
 
-		// Si el result es del activity NewTask:
-		if( requestCode == 1 && resultCode == 11 )
-		{
-			mViewPager.setCurrentItem(data.getBundleExtra("dataActivity").getInt("positionTag"));
+		if( resultCode != BACK )
+			mViewPager.setCurrentItem(data.getBundleExtra("dataActivity").getInt("positionSlider"));
 
-
-			// :: Falta actualizar el ListView despues de editar...
-			taskArrayListAdapter.notifyDataSetChanged(); // Revisar no hace nada
-		}
 	}
 
 
@@ -235,9 +247,9 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 								Intent intent = new Intent(context, NewTask.class);
 								Bundle bundle = new Bundle();
 								bundle.putBoolean("isNewTask", true);
-								bundle.putInt("positionTag", mViewPager.getCurrentItem());
+								bundle.putInt("positionSlider", mViewPager.getCurrentItem());
 								intent.putExtra("dataActivity", bundle);
-								startActivityForResult(intent, 1);
+								startActivityForResult(intent, Main.NEWTASK);
 								return true;
 
 							case R.id.main_menu_settings:
@@ -266,9 +278,9 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 				Intent intent = new Intent(context, NewTask.class);
 				Bundle bundle = new Bundle();
 				bundle.putBoolean("isNewTask", true);
-				bundle.putInt("positionTag", mViewPager.getCurrentItem());
+				bundle.putInt("positionSlider", mViewPager.getCurrentItem());
 				intent.putExtra("dataActivity", bundle);
-				startActivityForResult(intent, 1);
+				startActivityForResult(intent, Main.NEWTASK);
 				return true;
 
 			case R.id.main_menu_settings:
@@ -360,7 +372,7 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 		{
-			taskArrayList = new TaskHelper(context).getArrayTasks(tagArrayList.get(getArguments().getInt(ARG_SECTION_NUMBER) - 1).getID());
+			taskArrayList = taskHelper.getArrayTasks(tagArrayList.get(getArguments().getInt(ARG_SECTION_NUMBER) - 1).getID());
 
 			listTask = new ListView(context);
 			listTask.setOnItemClickListener(new OnItemClickListener()
@@ -390,15 +402,15 @@ public class Main extends FragmentActivity implements SearchView.OnQueryTextList
 									// Se preparan los parametros a pasar dentro de un Bundle:
 									Bundle bundle = new Bundle();
 									bundle.putBoolean("isNewTask", false);
-									bundle.putInt("positionTag", mViewPager.getCurrentItem());
+									bundle.putInt("positionSlider", mViewPager.getCurrentItem());
 									bundle.putInt("id", task.getID());
-									bundle.putInt("idTag", task.getIdTag());
+									bundle.putInt("idTag", task.getIDTag());
 									bundle.putString("title", task.getTitle());
 									bundle.putString("description", task.getDescription());
 
 									// Y por ultimo se adjunta el Bundle con los parametros al Intent y se envia al nuevo Activity:
 									intent.putExtra("dataActivity", bundle);
-									startActivityForResult(intent, 1);
+									context.startActivityForResult(intent, Main.NEWTASK);
 									return true;
 
 

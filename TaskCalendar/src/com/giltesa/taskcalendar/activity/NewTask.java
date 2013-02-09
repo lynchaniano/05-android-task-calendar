@@ -8,21 +8,30 @@
     Package:    com.giltesa.taskcalendar.activity
     File:       /TaskCalendar/src/com/giltesa/taskcalendar/activity/NewTask.java
 */
+/*
+	NOTAS DEL ACTIVITY:
+	
+		Desde este Activity no se realiza ninguna modificacion de las tareas. Simplemente se reciben datos y se devuelven.
+		Sera el padre, es decir el que llamo a esta tarea, el que se encargue de hacer lo que convenga con esos datos.
+		
+		Por ejemplo, si es el Activity Main quien abre un NewTask, al hacerlo le enviara los datos, estos pueden ser:
+			Solo la posicion del tag en la que nos encotrabamos para que aparezca por defecto en el formulario.
+			O ademas los datos de la tarea si le hemos dado a editar.
+			
+		En ambos casos cuando se termine esos datos se devolveran al Activity y este hara la insercion, actualizacion o nada.
+		Esto ha de hacerse asi ya que es la unica forma con la que he sabido refrescar despues la pantalla principal (o la del Activity padre)
+*/
 
 
 package com.giltesa.taskcalendar.activity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -34,19 +43,20 @@ import android.widget.Toast;
 
 import com.giltesa.taskcalendar.R;
 import com.giltesa.taskcalendar.adapter.TagArrayListAdapter;
-import com.giltesa.taskcalendar.helper.MySQLiteHelper;
 import com.giltesa.taskcalendar.helper.PreferenceHelper;
 import com.giltesa.taskcalendar.helper.TagHelper;
+import com.giltesa.taskcalendar.helper.TaskHelper;
 import com.giltesa.taskcalendar.util.Tag;
+import com.giltesa.taskcalendar.util.Task;
 
 
 public class NewTask extends Activity
 {
-	private EditText	tagTitle;
-	private EditText	tagDescription;
-	private Spinner		tagListSpinner;
-	private Bundle		dataReceived;
-
+	private EditText			EditTextTitle;
+	private EditText			EditTextDescription;
+	private Spinner				ListSpinnerTag;
+	private Bundle				dataReceived;
+	private static TaskHelper	taskHelper;
 
 
 
@@ -68,27 +78,30 @@ public class NewTask extends Activity
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
 		// Se recuperan los campos del activity:
-		tagTitle = (EditText)findViewById(R.id.main_newtask_title_text);
-		tagDescription = (EditText)findViewById(R.id.main_newtask_description_text);
-		tagListSpinner = (Spinner)findViewById(R.id.main_newtask_tag_spinner);
+		EditTextTitle = (EditText)findViewById(R.id.main_newtask_title_text);
+		EditTextDescription = (EditText)findViewById(R.id.main_newtask_description_text);
+		ListSpinnerTag = (Spinner)findViewById(R.id.main_newtask_tag_spinner);
 
 		// Se carga la lista de etiquetas en el Spinner:
 		ArrayList< Tag > tagArrayList = new TagHelper(this).getTagArrayList();
 		TagArrayListAdapter tagArrayListAdapter = new TagArrayListAdapter(this, R.layout.settings_tags_listitem_spinner, tagArrayList);
-		tagListSpinner.setAdapter(tagArrayListAdapter);
+		ListSpinnerTag.setAdapter(tagArrayListAdapter);
+
 
 		// Al construirse el activity hay que preconfigurar el formulario segun si le hemos dado a "Nueva tarea" o a "Editar tarea".
 		dataReceived = getIntent().getBundleExtra("dataActivity");
 
 		// En ambos casos se autoselecciona el item del Spinner para que coincida con la ultima pagina vista:
-		tagListSpinner.setSelection(dataReceived.getInt("positionTag"));
+		ListSpinnerTag.setSelection(dataReceived.getInt("positionSlider"));
 
 		// Ademas si le hemos dado a "Editar Tarea" se mostrara la informacion que ya contuviera la tarea:
 		if( !dataReceived.getBoolean("isNewTask") )
 		{
-			tagTitle.setText(dataReceived.getString("title"));
-			tagDescription.setText(dataReceived.getString("description"));
+			EditTextTitle.setText(dataReceived.getString("title"));
+			EditTextDescription.setText(dataReceived.getString("description"));
 		}
+
+		taskHelper = new TaskHelper(this);
 	}
 
 
@@ -116,43 +129,38 @@ public class NewTask extends Activity
 		switch( item.getItemId() )
 		{
 			case android.R.id.home:
+				setResult(Main.BACK, null);
 				finish();
 				break;
 
 			case R.id.main_newtask_actionbar_save:
-				if( tagTitle.getText().length() == 0 )
+				if( EditTextTitle.getText().length() == 0 )
 				{
 					Toast.makeText(this, getString(R.string.main_newtask_requeridFields), Toast.LENGTH_LONG).show();
 				}
 				else
 				{
-					SQLiteDatabase db = MySQLiteHelper.getInstance(NewTask.this).getWritableDatabase();
-					int idTag = ( (Tag)tagListSpinner.getSelectedItem() ).getID();
+					Intent intent = new Intent(this, Main.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					Bundle dataReturned = new Bundle();
+					dataReturned.putInt("positionSlider", ListSpinnerTag.getSelectedItemPosition());
+					intent.putExtra("dataActivity", dataReturned);
+					
+					Task task = new Task(dataReceived.getInt("id"), ( (Tag)ListSpinnerTag.getSelectedItem() ).getID(), null, EditTextTitle.getText().toString(), EditTextDescription.getText().toString(), null);
+
 
 					if( dataReceived.getBoolean("isNewTask") )
 					{
-						// Se prepara la fecha:
-						Date date = Calendar.getInstance().getTime();
-						String formattedDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(date);
-
-						// Se inserta la nueva tarea:
-						db.execSQL("INSERT INTO task VALUES ( NULL, ?, ?, ?, ?);", new Object[] { idTag, formattedDate, tagTitle.getText().toString(), tagDescription.getText().toString() });
+						taskHelper.insertTask(task);
 						Toast.makeText(this, getString(R.string.main_newtask_taskInserted), Toast.LENGTH_LONG).show();
 					}
 					else
 					{
-						// Se actualiza la tarea con la nueva informacion
-						db.execSQL("UPDATE task SET title = ?, description = ?, tag_id = ? WHERE id = ?;", new Object[] { tagTitle.getText(), tagDescription.getText().toString(), idTag, dataReceived.getInt("id") });
+						taskHelper.updateTask(task);
 						Toast.makeText(this, getString(R.string.main_newtask_taskUpdated), Toast.LENGTH_LONG).show();
 					}
-					db.close();
 
-					Intent intent = new Intent();
-					Bundle dataReturned = new Bundle();
-					dataReturned.putInt("positionTag", tagListSpinner.getSelectedItemPosition());
-					intent.putExtra("dataActivity", dataReturned);
-					setResult(11, intent);
-					finish();
+					startActivity(intent);
 				}
 				break;
 

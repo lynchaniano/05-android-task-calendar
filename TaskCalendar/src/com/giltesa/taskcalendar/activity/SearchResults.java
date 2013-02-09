@@ -130,12 +130,12 @@ public class SearchResults extends Activity
 									ArrayList< Tag > tagArrayList = new TagHelper(context).getTagArrayList();
 									int index;
 									for( index = 0 ; index < tagArrayList.size() ; index++ )
-										if( tagArrayList.get(index).getID() == task.getIdTag() )
+										if( tagArrayList.get(index).getID() == task.getIDTag() )
 											break;
 
-									dataReturned.putInt("positionTag", index);
+									dataReturned.putInt("positionSlider", index);  
 									dataReturned.putInt("id", task.getID());
-									dataReturned.putInt("idTag", task.getIdTag());
+									dataReturned.putInt("idTag", task.getIDTag());
 									dataReturned.putString("title", task.getTitle());
 									dataReturned.putString("description", task.getDescription());
 
