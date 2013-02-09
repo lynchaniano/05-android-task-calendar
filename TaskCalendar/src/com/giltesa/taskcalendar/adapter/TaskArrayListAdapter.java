@@ -94,7 +94,7 @@ public class TaskArrayListAdapter extends ArrayAdapter< Task >
 		}
 
 		holder.id.setText(taskArrayList.get(position).getID() + "");
-		holder.idTag.setText(taskArrayList.get(position).getIdTag() + "");
+		holder.idTag.setText(taskArrayList.get(position).getIDTag() + "");
 		holder.date.setText(taskArrayList.get(position).getDate());
 		holder.title.setText(taskArrayList.get(position).getTitle());
 		holder.description.setText(taskArrayList.get(position).getDescription());

@@ -44,7 +44,7 @@ public class Task
 
 
 
-	public int getIdTag()
+	public int getIDTag()
 	{
 		return idTag;
 	}
